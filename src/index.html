@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>AI Project Control Board</title>
+    <link rel="icon" href="favicon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="styles.css?v=20260604">
+  </head>
+  <body>
+    <div class="app-shell" id="app-root">
+      <aside class="sidebar">
+        <div class="brand">
+          <div class="brand-mark" aria-hidden="true">HC</div>
+          <div class="brand-copy">
+            <h1>AI Project Control Board</h1>
+            <p>AI Coding Workflow</p>
+          </div>
+        </div>
+
+        <nav class="primary-nav" id="stageNav" aria-label="프로젝트 단계"></nav>
+
+        <div class="sidebar-footer">
+          <button class="ghost-button refresh" id="refreshButton" type="button">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.3-5.7"></path><path d="M20 4v6h-6"></path></svg>
+            <span>새로고침</span>
+          </button>
+        </div>
+      </aside>
+
+      <main class="workspace">
+        <header class="topbar">
+          <div class="topbar-title">
+            <strong id="workspaceTitle">요구사항</strong>
+            <span id="projectName"></span>
+          </div>
+          <nav class="doc-tabs" id="documentTabs" aria-label="문서 탭"></nav>
+        </header>
+
+        <section class="content-shell" id="mainContent" aria-live="polite"></section>
+      </main>
+    </div>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    <script src="app.js?v=20260604"></script>
+  </body>
+</html>

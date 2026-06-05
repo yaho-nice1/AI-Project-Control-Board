@@ -1,0 +1,700 @@
+{
+  "schemaVersion": "0.2.0",
+  "project": {
+    "name": "AI Project Control Board",
+    "goal": "# AI Workflow Control Board"
+  },
+  "currentStage": "tasks",
+  "updatedAt": "2026-06-05T07:15:24.220Z",
+  "documents": [
+    {
+      "key": "agents",
+      "title": "AGENTS.md",
+      "path": "AGENTS.md",
+      "status": "done",
+      "body": "이 문서는 AI Workflow Control Board 프로젝트에서 AI coding agent가 반드시 따라야 할 작업 규칙이다. 모든 변경은 템플릿 문서 구조에 근거해야 하며, 비개발자가 검토할 수 있는 형태로 범위, 이유, 검증 결과를 남겨야 한다.",
+      "updatedAt": "2026-06-04T11:50:46.166Z"
+    },
+    {
+      "key": "docs-architecture",
+      "title": "architecture.md",
+      "path": "docs/architecture.md",
+      "status": "done",
+      "body": "시스템 구조, 계층, 데이터 흐름을 설명한다. 구현자는 이 문서를 기준으로 컨트롤 보드의 책임과 템플릿 문서 간 연결 방식을 판단한다.",
+      "updatedAt": "2026-06-01T18:38:41.305Z"
+    },
+    {
+      "key": "docs-coding-rules",
+      "title": "coding-rules.md",
+      "path": "docs/coding-rules.md",
+      "status": "done",
+      "body": "코드 스타일, UI 규칙, 네이밍 규칙을 정의한다.",
+      "updatedAt": "2026-06-01T18:38:41.447Z"
+    },
+    {
+      "key": "docs-data-contracts",
+      "title": "data-contracts.md",
+      "path": "docs/data-contracts.md",
+      "status": "done",
+      "body": "보드가 다루는 워크플로우 단계, 문서, 체크리스트, 검증 결과의 구조를 정의한다. 데이터 구조가 바뀌면 이 문서를 먼저 또는 함께 갱신한다.",
+      "updatedAt": "2026-06-04T11:50:46.299Z"
+    },
+    {
+      "key": "docs-testing-guide",
+      "title": "testing-guide.md",
+      "path": "docs/testing-guide.md",
+      "status": "done",
+      "body": "테스트 명령어와 변경 유형별 필수 테스트를 정의한다.",
+      "updatedAt": "2026-06-04T11:50:46.435Z"
+    }
+  ],
+  "features": [
+    {
+      "id": "ai-workflow-control-board",
+      "path": "specs/ai-workflow-control-board/",
+      "title": "Ai Workflow Control Board",
+      "status": "done",
+      "summary": "AI 프로젝트 템플릿은 `AGENTS.md`, `docs/`, `specs/`, `adr/`, `scripts/`를 통해 AI coding agent가 안전하게 작업하도록 돕는다. 하지만 비개발자는 Markdown 문서, 파일 경로, 터미널 명령, 테스트 절차를 직접 따라가기 어렵다.",
+      "documents": [
+        {
+          "path": "specs/ai-workflow-control-board/spec.md",
+          "name": "spec.md",
+          "status": "done",
+          "required": true,
+          "summary": "AI 프로젝트 템플릿은 `AGENTS.md`, `docs/`, `specs/`, `adr/`, `scripts/`를 통해 AI coding agent가 안전하게 작업하도록 돕는다. 하지만 비개발자는 Markdown 문서, 파일 경로, 터미널 명령, 테스트 절차를 직접 따라가기 어렵다.",
+          "updatedAt": "2026-06-04T11:29:44.421Z"
+        },
+        {
+          "path": "specs/ai-workflow-control-board/plan.md",
+          "name": "plan.md",
+          "status": "done",
+          "required": true,
+          "summary": "# Plan",
+          "updatedAt": "2026-06-04T11:29:44.561Z"
+        },
+        {
+          "path": "specs/ai-workflow-control-board/tasks.md",
+          "name": "tasks.md",
+          "status": "done",
+          "required": true,
+          "summary": "# Tasks",
+          "updatedAt": "2026-06-01T18:45:07.060Z"
+        },
+        {
+          "path": "specs/ai-workflow-control-board/acceptance-tests.md",
+          "name": "acceptance-tests.md",
+          "status": "done",
+          "required": true,
+          "summary": "# Acceptance Tests",
+          "updatedAt": "2026-06-01T18:38:42.841Z"
+        },
+        {
+          "path": "specs/ai-workflow-control-board/change-log.md",
+          "name": "change-log.md",
+          "status": "done",
+          "required": true,
+          "summary": "# Change Log",
+          "updatedAt": "2026-06-04T11:40:50.488Z"
+        }
+      ],
+      "tasks": [
+        {
+          "id": "ai-workflow-control-board-agents-md-확인",
+          "featureId": "ai-workflow-control-board",
+          "title": "AGENTS.md 확인",
+          "status": "done",
+          "source": "specs/ai-workflow-control-board/tasks.md",
+          "criteria": "체크된 작업으로 기록되어 있다."
+        },
+        {
+          "id": "ai-workflow-control-board-readme와-핵심-docs-확인",
+          "featureId": "ai-workflow-control-board",
+          "title": "README와 핵심 docs 확인",
+          "status": "done",
+          "source": "specs/ai-workflow-control-board/tasks.md",
+          "criteria": "체크된 작업으로 기록되어 있다."
+        },
+        {
+          "id": "ai-workflow-control-board-adr-확인",
+          "featureId": "ai-workflow-control-board",
+          "title": "ADR 확인",
+          "status": "done",
+          "source": "specs/ai-workflow-control-board/tasks.md",
+          "criteria": "체크된 작업으로 기록되어 있다."
+        },
+        {
+          "id": "ai-workflow-control-board-컨트롤-보드-spec-작성",
+          "featureId": "ai-workflow-control-board",
+          "title": "컨트롤 보드 spec 작성",
+          "status": "done",
+          "source": "specs/ai-workflow-control-board/tasks.md",
+          "criteria": "체크된 작업으로 기록되어 있다."
+        },
+        {
+          "id": "ai-workflow-control-board-컨트롤-보드-plan-작성",
+          "featureId": "ai-workflow-control-board",
+          "title": "컨트롤 보드 plan 작성",
+          "status": "done",
+          "source": "specs/ai-workflow-control-board/tasks.md",
+          "criteria": "체크된 작업으로 기록되어 있다."
+        },
+        {
+          "id": "ai-workflow-control-board-데이터-계약-작성",
+          "featureId": "ai-workflow-control-board",
+          "title": "데이터 계약 작성",
+          "status": "done",
+          "source": "specs/ai-workflow-control-board/tasks.md",
+          "criteria": "체크된 작업으로 기록되어 있다."
+        },
+        {
+          "id": "ai-workflow-control-board-정적-웹앱-구현",
+          "featureId": "ai-workflow-control-board",
+          "title": "정적 웹앱 구현",
+          "status": "done",
+          "source": "specs/ai-workflow-control-board/tasks.md",
+          "criteria": "체크된 작업으로 기록되어 있다."
+        },
+        {
+          "id": "ai-workflow-control-board-체크리스트-상태-저장-구현",
+          "featureId": "ai-workflow-control-board",
+          "title": "체크리스트 상태 저장 구현",
+          "status": "done",
+          "source": "specs/ai-workflow-control-board/tasks.md",
+          "criteria": "체크된 작업으로 기록되어 있다."
+        },
+        {
+          "id": "ai-workflow-control-board-ai-작업-지시문-생성-구현",
+          "featureId": "ai-workflow-control-board",
+          "title": "AI 작업 지시문 생성 구현",
+          "status": "done",
+          "source": "specs/ai-workflow-control-board/tasks.md",
+          "criteria": "체크된 작업으로 기록되어 있다."
+        },
+        {
+          "id": "ai-workflow-control-board-테스트-스크립트-작성",
+          "featureId": "ai-workflow-control-board",
+          "title": "테스트 스크립트 작성",
+          "status": "done",
+          "source": "specs/ai-workflow-control-board/tasks.md",
+          "criteria": "체크된 작업으로 기록되어 있다."
+        },
+        {
+          "id": "ai-workflow-control-board-브라우저-화면-검증",
+          "featureId": "ai-workflow-control-board",
+          "title": "브라우저 화면 검증",
+          "status": "done",
+          "source": "specs/ai-workflow-control-board/tasks.md",
+          "criteria": "체크된 작업으로 기록되어 있다."
+        },
+        {
+          "id": "ai-workflow-control-board-변경-로그-최종-갱신",
+          "featureId": "ai-workflow-control-board",
+          "title": "변경 로그 최종 갱신",
+          "status": "done",
+          "source": "specs/ai-workflow-control-board/tasks.md",
+          "criteria": "체크된 작업으로 기록되어 있다."
+        }
+      ]
+    },
+    {
+      "id": "document-state-sync",
+      "path": "specs/document-state-sync/",
+      "title": "Document State Sync",
+      "status": "review",
+      "summary": "현재 보드는 `src/app.js` 안의 내장 데이터로 기능, 문서, 태스크, 기록 상태를 표시한다. 하지만 실제 프로젝트 진행도를 보려면 `specs/<feature-name>/` 폴더와 각 Markdown 문서의 존재 여부, 검토 상태, 태스크 상태가 화면에 반영되어야 한다.",
+      "documents": [
+        {
+          "path": "specs/document-state-sync/spec.md",
+          "name": "spec.md",
+          "status": "done",
+          "required": true,
+          "summary": "현재 보드는 `src/app.js` 안의 내장 데이터로 기능, 문서, 태스크, 기록 상태를 표시한다. 하지만 실제 프로젝트 진행도를 보려면 `specs/<feature-name>/` 폴더와 각 Markdown 문서의 존재 여부, 검토 상태, 태스크 상태가 화면에 반영되어야 한다.",
+          "updatedAt": "2026-06-04T11:50:46.572Z"
+        },
+        {
+          "path": "specs/document-state-sync/plan.md",
+          "name": "plan.md",
+          "status": "done",
+          "required": true,
+          "summary": "# Plan",
+          "updatedAt": "2026-06-04T11:50:46.711Z"
+        },
+        {
+          "path": "specs/document-state-sync/tasks.md",
+          "name": "tasks.md",
+          "status": "done",
+          "required": true,
+          "summary": "# Tasks",
+          "updatedAt": "2026-06-04T11:50:46.848Z"
+        },
+        {
+          "path": "specs/document-state-sync/acceptance-tests.md",
+          "name": "acceptance-tests.md",
+          "status": "review",
+          "required": true,
+          "summary": "# Acceptance Tests",
+          "updatedAt": "2026-06-04T11:50:46.983Z"
+        },
+        {
+          "path": "specs/document-state-sync/change-log.md",
+          "name": "change-log.md",
+          "status": "review",
+          "required": true,
+          "summary": "# Change Log",
+          "updatedAt": "2026-06-04T11:50:47.120Z"
+        }
+      ],
+      "tasks": [
+        {
+          "id": "document-state-sync-document-state-sync-기능-spec-폴더-생성",
+          "featureId": "document-state-sync",
+          "title": "document-state-sync 기능 spec 폴더 생성",
+          "status": "done",
+          "source": "specs/document-state-sync/tasks.md",
+          "criteria": "체크된 작업으로 기록되어 있다."
+        },
+        {
+          "id": "document-state-sync-상태-동기화-데이터-계약-초안-작성",
+          "featureId": "document-state-sync",
+          "title": "상태 동기화 데이터 계약 초안 작성",
+          "status": "done",
+          "source": "specs/document-state-sync/tasks.md",
+          "criteria": "체크된 작업으로 기록되어 있다."
+        },
+        {
+          "id": "document-state-sync-control-board-state-json-기본-구조-정의",
+          "featureId": "document-state-sync",
+          "title": ".control-board/state.json 기본 구조 정의",
+          "status": "done",
+          "source": "specs/document-state-sync/tasks.md",
+          "criteria": "체크된 작업으로 기록되어 있다."
+        },
+        {
+          "id": "document-state-sync-실제-상태-파일-예시-추가",
+          "featureId": "document-state-sync",
+          "title": "실제 상태 파일 예시 추가",
+          "status": "done",
+          "source": "specs/document-state-sync/tasks.md",
+          "criteria": "체크된 작업으로 기록되어 있다."
+        },
+        {
+          "id": "document-state-sync-src-app-js-데이터를-상태-파일-모델로-매핑",
+          "featureId": "document-state-sync",
+          "title": "src/app.js 데이터를 상태 파일 모델로 매핑",
+          "status": "done",
+          "source": "specs/document-state-sync/tasks.md",
+          "criteria": "체크된 작업으로 기록되어 있다."
+        },
+        {
+          "id": "document-state-sync-상태-파일-누락-시-fallback-동작-구현",
+          "featureId": "document-state-sync",
+          "title": "상태 파일 누락 시 fallback 동작 구현",
+          "status": "done",
+          "source": "specs/document-state-sync/tasks.md",
+          "criteria": "체크된 작업으로 기록되어 있다."
+        },
+        {
+          "id": "document-state-sync-scripts-board-sync-js로-실제-markdown-파일-읽기-구현",
+          "featureId": "document-state-sync",
+          "title": "scripts/board-sync.js로 실제 Markdown 파일 읽기 구현",
+          "status": "done",
+          "source": "specs/document-state-sync/tasks.md",
+          "criteria": "체크된 작업으로 기록되어 있다."
+        },
+        {
+          "id": "document-state-sync-핵심-문서-5개를-board-state-json-문서-탭에-반영",
+          "featureId": "document-state-sync",
+          "title": "핵심 문서 5개를 board-state.json 문서 탭에 반영",
+          "status": "done",
+          "source": "specs/document-state-sync/tasks.md",
+          "criteria": "체크된 작업으로 기록되어 있다."
+        },
+        {
+          "id": "document-state-sync-기능별-specs-feature-name-폴더-스캔-구현",
+          "featureId": "document-state-sync",
+          "title": "기능별 specs/<feature-name>/ 폴더 스캔 구현",
+          "status": "done",
+          "source": "specs/document-state-sync/tasks.md",
+          "criteria": "체크된 작업으로 기록되어 있다."
+        },
+        {
+          "id": "document-state-sync-tasks-md-체크박스-기반-태스크-상태-추출",
+          "featureId": "document-state-sync",
+          "title": "tasks.md 체크박스 기반 태스크 상태 추출",
+          "status": "done",
+          "source": "specs/document-state-sync/tasks.md",
+          "criteria": "체크된 작업으로 기록되어 있다."
+        },
+        {
+          "id": "document-state-sync-run-tests-sh에-board-sync-검증-포함",
+          "featureId": "document-state-sync",
+          "title": "run_tests.sh에 board-sync 검증 포함",
+          "status": "done",
+          "source": "specs/document-state-sync/tasks.md",
+          "criteria": "체크된 작업으로 기록되어 있다."
+        },
+        {
+          "id": "document-state-sync-문서-상태와-작업-맵이-실제-기능-spec-폴더-기준으로-표시되는지-검증",
+          "featureId": "document-state-sync",
+          "title": "문서 상태와 작업 맵이 실제 기능 spec 폴더 기준으로 표시되는지 검증",
+          "status": "done",
+          "source": "specs/document-state-sync/tasks.md",
+          "criteria": "체크된 작업으로 기록되어 있다."
+        }
+      ]
+    },
+    {
+      "id": "generated-docs-preview",
+      "path": "specs/generated-docs-preview/",
+      "title": "Generated Docs Preview",
+      "status": "active",
+      "summary": "AI 템플릿은 `AGENTS.md`, `docs/architecture.md`, `docs/data-contracts.md` 같은 문서를 기준으로 작업한다. 사용자는 파일 경로보다 문서의 목적, 상태, 검토 필요 여부를 먼저 이해해야 한다.",
+      "documents": [
+        {
+          "path": "specs/generated-docs-preview/spec.md",
+          "name": "spec.md",
+          "status": "done",
+          "required": true,
+          "summary": "AI 템플릿은 `AGENTS.md`, `docs/architecture.md`, `docs/data-contracts.md` 같은 문서를 기준으로 작업한다. 사용자는 파일 경로보다 문서의 목적, 상태, 검토 필요 여부를 먼저 이해해야 한다.",
+          "updatedAt": "2026-06-03T14:04:11.986Z"
+        },
+        {
+          "path": "specs/generated-docs-preview/plan.md",
+          "name": "plan.md",
+          "status": "done",
+          "required": true,
+          "summary": "# Plan",
+          "updatedAt": "2026-06-03T14:04:12.126Z"
+        },
+        {
+          "path": "specs/generated-docs-preview/tasks.md",
+          "name": "tasks.md",
+          "status": "review",
+          "required": true,
+          "summary": "# Tasks",
+          "updatedAt": "2026-06-03T14:04:12.269Z"
+        },
+        {
+          "path": "specs/generated-docs-preview/acceptance-tests.md",
+          "name": "acceptance-tests.md",
+          "status": "done",
+          "required": true,
+          "summary": "# Acceptance Tests",
+          "updatedAt": "2026-06-03T14:04:12.401Z"
+        },
+        {
+          "path": "specs/generated-docs-preview/change-log.md",
+          "name": "change-log.md",
+          "status": "done",
+          "required": true,
+          "summary": "# Change Log",
+          "updatedAt": "2026-06-03T14:04:12.541Z"
+        }
+      ],
+      "tasks": [
+        {
+          "id": "generated-docs-preview-요구사항-화면에-홈-문서-탭-구성",
+          "featureId": "generated-docs-preview",
+          "title": "요구사항 화면에 홈/문서 탭 구성",
+          "status": "done",
+          "source": "specs/generated-docs-preview/tasks.md",
+          "criteria": "체크된 작업으로 기록되어 있다."
+        },
+        {
+          "id": "generated-docs-preview-문서-생성-현황을-1열-row-ui로-표시",
+          "featureId": "generated-docs-preview",
+          "title": "문서 생성 현황을 1열 row UI로 표시",
+          "status": "done",
+          "source": "specs/generated-docs-preview/tasks.md",
+          "criteria": "체크된 작업으로 기록되어 있다."
+        },
+        {
+          "id": "generated-docs-preview-모든-문서가-스크롤로-보이도록-제한-제거",
+          "featureId": "generated-docs-preview",
+          "title": "모든 문서가 스크롤로 보이도록 제한 제거",
+          "status": "done",
+          "source": "specs/generated-docs-preview/tasks.md",
+          "criteria": "체크된 작업으로 기록되어 있다."
+        },
+        {
+          "id": "generated-docs-preview-markdown-미리보기-화면-구성",
+          "featureId": "generated-docs-preview",
+          "title": "Markdown 미리보기 화면 구성",
+          "status": "done",
+          "source": "specs/generated-docs-preview/tasks.md",
+          "criteria": "체크된 작업으로 기록되어 있다."
+        },
+        {
+          "id": "generated-docs-preview-계획-탭에서-기능-경로와-문서-pill-표시",
+          "featureId": "generated-docs-preview",
+          "title": "계획 탭에서 기능 경로와 문서 pill 표시",
+          "status": "done",
+          "source": "specs/generated-docs-preview/tasks.md",
+          "criteria": "체크된 작업으로 기록되어 있다."
+        },
+        {
+          "id": "generated-docs-preview-실제-markdown-파일-읽기와-상태-동기화-방식-검토",
+          "featureId": "generated-docs-preview",
+          "title": "실제 Markdown 파일 읽기와 상태 동기화 방식 검토",
+          "status": "waiting",
+          "source": "specs/generated-docs-preview/tasks.md",
+          "criteria": "tasks.md에서 완료 체크가 필요하다."
+        }
+      ]
+    },
+    {
+      "id": "validation-and-handoff",
+      "path": "specs/validation-and-handoff/",
+      "title": "Validation And Handoff",
+      "status": "active",
+      "summary": "AI coding agent와 함께 작업하려면 테스트 결과, 변경 기록, ADR, 다음 작업 요청이 분리되어 보여야 한다. 사용자는 작업이 완료됐는지, 어떤 위험이 남았는지, 어떤 결정을 승인했는지 확인해야 한다.",
+      "documents": [
+        {
+          "path": "specs/validation-and-handoff/spec.md",
+          "name": "spec.md",
+          "status": "done",
+          "required": true,
+          "summary": "AI coding agent와 함께 작업하려면 테스트 결과, 변경 기록, ADR, 다음 작업 요청이 분리되어 보여야 한다. 사용자는 작업이 완료됐는지, 어떤 위험이 남았는지, 어떤 결정을 승인했는지 확인해야 한다.",
+          "updatedAt": "2026-06-03T14:04:12.817Z"
+        },
+        {
+          "path": "specs/validation-and-handoff/plan.md",
+          "name": "plan.md",
+          "status": "done",
+          "required": true,
+          "summary": "# Plan",
+          "updatedAt": "2026-06-03T14:04:12.957Z"
+        },
+        {
+          "path": "specs/validation-and-handoff/tasks.md",
+          "name": "tasks.md",
+          "status": "review",
+          "required": true,
+          "summary": "# Tasks",
+          "updatedAt": "2026-06-03T14:04:13.094Z"
+        },
+        {
+          "path": "specs/validation-and-handoff/acceptance-tests.md",
+          "name": "acceptance-tests.md",
+          "status": "done",
+          "required": true,
+          "summary": "# Acceptance Tests",
+          "updatedAt": "2026-06-03T14:04:13.230Z"
+        },
+        {
+          "path": "specs/validation-and-handoff/change-log.md",
+          "name": "change-log.md",
+          "status": "done",
+          "required": true,
+          "summary": "# Change Log",
+          "updatedAt": "2026-06-03T14:50:17.566Z"
+        }
+      ],
+      "tasks": [
+        {
+          "id": "validation-and-handoff-테스트-기록-화면-구성",
+          "featureId": "validation-and-handoff",
+          "title": "테스트 기록 화면 구성",
+          "status": "done",
+          "source": "specs/validation-and-handoff/tasks.md",
+          "criteria": "체크된 작업으로 기록되어 있다."
+        },
+        {
+          "id": "validation-and-handoff-변경-기록-화면-구성",
+          "featureId": "validation-and-handoff",
+          "title": "변경 기록 화면 구성",
+          "status": "done",
+          "source": "specs/validation-and-handoff/tasks.md",
+          "criteria": "체크된 작업으로 기록되어 있다."
+        },
+        {
+          "id": "validation-and-handoff-adr-화면-구성",
+          "featureId": "validation-and-handoff",
+          "title": "ADR 화면 구성",
+          "status": "done",
+          "source": "specs/validation-and-handoff/tasks.md",
+          "criteria": "체크된 작업으로 기록되어 있다."
+        },
+        {
+          "id": "validation-and-handoff-agents-md-완료-보고-형식-유지",
+          "featureId": "validation-and-handoff",
+          "title": "AGENTS.md 완료 보고 형식 유지",
+          "status": "done",
+          "source": "specs/validation-and-handoff/tasks.md",
+          "criteria": "체크된 작업으로 기록되어 있다."
+        },
+        {
+          "id": "validation-and-handoff-작업-후-change-log-기록",
+          "featureId": "validation-and-handoff",
+          "title": "작업 후 change-log 기록",
+          "status": "done",
+          "source": "specs/validation-and-handoff/tasks.md",
+          "criteria": "체크된 작업으로 기록되어 있다."
+        },
+        {
+          "id": "validation-and-handoff-codex-작업-요청-생성-흐름을-기능별-spec과-연결하는-방식-검토",
+          "featureId": "validation-and-handoff",
+          "title": "Codex 작업 요청 생성 흐름을 기능별 spec과 연결하는 방식 검토",
+          "status": "waiting",
+          "source": "specs/validation-and-handoff/tasks.md",
+          "criteria": "tasks.md에서 완료 체크가 필요하다."
+        }
+      ]
+    },
+    {
+      "id": "workflow-visualization",
+      "path": "specs/workflow-visualization/",
+      "title": "Workflow Visualization",
+      "status": "active",
+      "summary": "사용자는 AI 템플릿을 사용할 때 현재 프로젝트가 요구사항, 계획, 작업, 검증, 변경 기록, 결정 기록 중 어디에 있는지 빠르게 보고 싶어 한다. 파일 구조를 직접 읽는 대신 화면 전환, 상태 카드, 칸반 보드, 태스크 맵으로 흐름을 확인해야 한다.",
+      "documents": [
+        {
+          "path": "specs/workflow-visualization/spec.md",
+          "name": "spec.md",
+          "status": "done",
+          "required": true,
+          "summary": "사용자는 AI 템플릿을 사용할 때 현재 프로젝트가 요구사항, 계획, 작업, 검증, 변경 기록, 결정 기록 중 어디에 있는지 빠르게 보고 싶어 한다. 파일 구조를 직접 읽는 대신 화면 전환, 상태 카드, 칸반 보드, 태스크 맵으로 흐름을 확인해야 한다.",
+          "updatedAt": "2026-06-03T14:04:11.042Z"
+        },
+        {
+          "path": "specs/workflow-visualization/plan.md",
+          "name": "plan.md",
+          "status": "done",
+          "required": true,
+          "summary": "# Plan",
+          "updatedAt": "2026-06-03T14:04:11.188Z"
+        },
+        {
+          "path": "specs/workflow-visualization/tasks.md",
+          "name": "tasks.md",
+          "status": "review",
+          "required": true,
+          "summary": "# Tasks",
+          "updatedAt": "2026-06-05T07:10:52.349Z"
+        },
+        {
+          "path": "specs/workflow-visualization/acceptance-tests.md",
+          "name": "acceptance-tests.md",
+          "status": "done",
+          "required": true,
+          "summary": "# Acceptance Tests",
+          "updatedAt": "2026-06-05T07:10:52.481Z"
+        },
+        {
+          "path": "specs/workflow-visualization/change-log.md",
+          "name": "change-log.md",
+          "status": "done",
+          "required": true,
+          "summary": "# Change Log",
+          "updatedAt": "2026-06-05T07:10:52.608Z"
+        }
+      ],
+      "tasks": [
+        {
+          "id": "workflow-visualization-왼쪽-내비게이션을-화면-전환용-아이콘-rail로-정리",
+          "featureId": "workflow-visualization",
+          "title": "왼쪽 내비게이션을 화면 전환용 아이콘 rail로 정리",
+          "status": "done",
+          "source": "specs/workflow-visualization/tasks.md",
+          "criteria": "체크된 작업으로 기록되어 있다."
+        },
+        {
+          "id": "workflow-visualization-요구사항-홈에-완료-현재-다음-단계-카드-배치",
+          "featureId": "workflow-visualization",
+          "title": "요구사항 홈에 완료/현재/다음 단계 카드 배치",
+          "status": "done",
+          "source": "specs/workflow-visualization/tasks.md",
+          "criteria": "체크된 작업으로 기록되어 있다."
+        },
+        {
+          "id": "workflow-visualization-진행-체크리스트와-문서-생성-현황을-compact-영역으로-축소",
+          "featureId": "workflow-visualization",
+          "title": "진행 체크리스트와 문서 생성 현황을 compact 영역으로 축소",
+          "status": "done",
+          "source": "specs/workflow-visualization/tasks.md",
+          "criteria": "체크된 작업으로 기록되어 있다."
+        },
+        {
+          "id": "workflow-visualization-메인-칸반-보드를-요구사항-홈-중심-영역으로-복원",
+          "featureId": "workflow-visualization",
+          "title": "메인 칸반 보드를 요구사항 홈 중심 영역으로 복원",
+          "status": "done",
+          "source": "specs/workflow-visualization/tasks.md",
+          "criteria": "체크된 작업으로 기록되어 있다."
+        },
+        {
+          "id": "workflow-visualization-칸반-컬럼-제목을-상태별-색상-pill로-표시",
+          "featureId": "workflow-visualization",
+          "title": "칸반 컬럼 제목을 상태별 색상 pill로 표시",
+          "status": "done",
+          "source": "specs/workflow-visualization/tasks.md",
+          "criteria": "체크된 작업으로 기록되어 있다."
+        },
+        {
+          "id": "workflow-visualization-작업-화면을-기능별-태스크-맵으로-변경",
+          "featureId": "workflow-visualization",
+          "title": "작업 화면을 기능별 태스크 맵으로 변경",
+          "status": "done",
+          "source": "specs/workflow-visualization/tasks.md",
+          "criteria": "체크된 작업으로 기록되어 있다."
+        },
+        {
+          "id": "workflow-visualization-태스크-맵-연결선과-노드-크기-보정",
+          "featureId": "workflow-visualization",
+          "title": "태스크 맵 연결선과 노드 크기 보정",
+          "status": "done",
+          "source": "specs/workflow-visualization/tasks.md",
+          "criteria": "체크된 작업으로 기록되어 있다."
+        },
+        {
+          "id": "workflow-visualization-태스크-노드-클릭-시-작업-상세-팝업-표시",
+          "featureId": "workflow-visualization",
+          "title": "태스크 노드 클릭 시 작업 상세 팝업 표시",
+          "status": "done",
+          "source": "specs/workflow-visualization/tasks.md",
+          "criteria": "체크된 작업으로 기록되어 있다."
+        },
+        {
+          "id": "workflow-visualization-기능별-task-목록을-기본-접힘-상태로-표시",
+          "featureId": "workflow-visualization",
+          "title": "기능별 task 목록을 기본 접힘 상태로 표시",
+          "status": "done",
+          "source": "specs/workflow-visualization/tasks.md",
+          "criteria": "체크된 작업으로 기록되어 있다."
+        },
+        {
+          "id": "workflow-visualization-기능-노드-클릭-시-해당-기능-task만-펼치기",
+          "featureId": "workflow-visualization",
+          "title": "기능 노드 클릭 시 해당 기능 task만 펼치기",
+          "status": "done",
+          "source": "specs/workflow-visualization/tasks.md",
+          "criteria": "체크된 작업으로 기록되어 있다."
+        },
+        {
+          "id": "workflow-visualization-홈-단계-카드-진행률을-실제-기능-문서-task-상태-기준으로-계산",
+          "featureId": "workflow-visualization",
+          "title": "홈 단계 카드 진행률을 실제 기능/문서/task 상태 기준으로 계산",
+          "status": "done",
+          "source": "specs/workflow-visualization/tasks.md",
+          "criteria": "체크된 작업으로 기록되어 있다."
+        },
+        {
+          "id": "workflow-visualization-홈-작업-보드를-task-단위가-아닌-기능-단위-칸반으로-동기화",
+          "featureId": "workflow-visualization",
+          "title": "홈 작업 보드를 task 단위가 아닌 기능 단위 칸반으로 동기화",
+          "status": "done",
+          "source": "specs/workflow-visualization/tasks.md",
+          "criteria": "체크된 작업으로 기록되어 있다."
+        },
+        {
+          "id": "workflow-visualization-태스크-노드에서-관련-문서로-바로-이동하는-상호작용-검토",
+          "featureId": "workflow-visualization",
+          "title": "태스크 노드에서 관련 문서로 바로 이동하는 상호작용 검토",
+          "status": "waiting",
+          "source": "specs/workflow-visualization/tasks.md",
+          "criteria": "tasks.md에서 완료 체크가 필요하다."
+        }
+      ]
+    }
+  ]
+}
