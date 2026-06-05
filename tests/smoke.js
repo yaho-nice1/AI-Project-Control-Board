@@ -65,6 +65,8 @@ assert(app.includes("data-home-document-key"), "Home document rows must link to 
 assert(app.includes("renderMarkdown"), "Full markdown renderer is missing");
 assert(app.includes("Allowed Files") || app.includes("변경 가능 파일"), "Allowed files prompt section is missing");
 assert(boardState.schemaVersion, "Board state schemaVersion is missing");
+assert(boardState.sourceProject && boardState.sourceProject.path, "Board state sourceProject is missing");
+assert(boardState.structure && Array.isArray(boardState.structure.missing), "Board state structure check is missing");
 assert(browserBoardState.schemaVersion === boardState.schemaVersion, "Browser board state schemaVersion must match source state");
 assert(Array.isArray(boardState.features), "Board state features must be an array");
 assert(Array.isArray(boardState.documents), "Board state core documents must be an array");

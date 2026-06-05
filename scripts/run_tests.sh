@@ -33,6 +33,7 @@ required_files=(
   "specs/document-state-sync/tasks.md"
   "specs/document-state-sync/acceptance-tests.md"
   "specs/document-state-sync/change-log.md"
+  "scripts/board-init.js"
   "scripts/board-sync.js"
   ".control-board/state.json"
   "src/board-state.json"
@@ -52,9 +53,13 @@ for file in "${required_files[@]}"; do
 done
 
 node --check src/app.js
+node --check scripts/board-init.js
 node --check scripts/board-sync.js
+node --check tests/external-project.js
 node --check tests/smoke.js
 node scripts/board-sync.js
+node tests/smoke.js
+node tests/external-project.js
 node tests/smoke.js
 
 echo "All checks passed."

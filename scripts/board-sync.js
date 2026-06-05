@@ -2,8 +2,10 @@
 const fs = require("fs");
 const path = require("path");
 
-const root = path.resolve(__dirname, "..");
+const boardRoot = path.resolve(__dirname, "..");
+const sourceRoot = resolveSourceRoot();
 const schemaVersion = "0.2.0";
+const requiredRootPaths = ["AGENTS.md", "README.md"];
 const coreDocumentPaths = [
   "AGENTS.md",
   "docs/architecture.md",
@@ -15,8 +17,22 @@ const featureDocumentNames = ["spec.md", "plan.md", "tasks.md", "acceptance-test
 const activityRoots = ["AGENTS.md", "README.md", "docs", "specs", "adr", "scripts", "src", "tests"];
 const generatedActivityPaths = new Set([".control-board/state.json", "src/board-state.json"]);
 
+function resolveSourceRoot() {
+  const projectFlagIndex = process.argv.indexOf("--project");
+  if (projectFlagIndex === -1) {
+    return boardRoot;
+  }
+
+  const projectPath = process.argv[projectFlagIndex + 1];
+  if (!projectPath) {
+    throw new Error("Missing value for --project");
+  }
+
+  return path.resolve(projectPath);
+}
+
 function readText(relativePath) {
-  const fullPath = path.join(root, relativePath);
+  const fullPath = path.join(sourceRoot, relativePath);
   if (!fs.existsSync(fullPath)) {
     return null;
   }
@@ -24,7 +40,7 @@ function readText(relativePath) {
 }
 
 function writeJson(relativePath, data) {
-  const fullPath = path.join(root, relativePath);
+  const fullPath = path.join(boardRoot, relativePath);
   fs.mkdirSync(path.dirname(fullPath), { recursive: true });
   fs.writeFileSync(fullPath, `${JSON.stringify(data, null, 2)}\n`);
 }
@@ -61,7 +77,7 @@ function extractSummary(text, fallback) {
 }
 
 function fileUpdatedAt(relativePath) {
-  const fullPath = path.join(root, relativePath);
+  const fullPath = path.join(sourceRoot, relativePath);
   return fs.existsSync(fullPath) ? fs.statSync(fullPath).mtime.toISOString() : null;
 }
 
@@ -89,7 +105,7 @@ function collectActivityFiles(targetPath) {
     return [];
   }
 
-  const fullPath = path.join(root, targetPath);
+  const fullPath = path.join(sourceRoot, targetPath);
   if (!fs.existsSync(fullPath)) {
     return [];
   }
@@ -239,7 +255,7 @@ function featureState(featureName) {
 }
 
 function discoverFeatures() {
-  const specsPath = path.join(root, "specs");
+  const specsPath = path.join(sourceRoot, "specs");
   if (!fs.existsSync(specsPath)) {
     return [];
   }
@@ -265,14 +281,64 @@ function currentStage(features) {
   return "changelog";
 }
 
+function sourceProjectName() {
+  const readme = readText("README.md");
+  if (readme) {
+    const heading = readme.match(/^#\s+(.+)$/m);
+    if (heading) {
+      return heading[1].trim();
+    }
+  }
+  return path.basename(sourceRoot);
+}
+
+function structureState(features) {
+  const requiredFeatureFiles = features.flatMap((feature) =>
+    feature.documents.filter((document) => document.status === "missing").map((document) => document.path),
+  );
+  const missing = [...requiredRootPaths, ...coreDocumentPaths, "specs"]
+    .filter((relativePath) => !fs.existsSync(path.join(sourceRoot, relativePath)))
+    .concat(requiredFeatureFiles);
+  const specsPath = path.join(sourceRoot, "specs");
+  const hasFeatureFolders =
+    fs.existsSync(specsPath) &&
+    fs.readdirSync(specsPath, { withFileTypes: true }).some((entry) => entry.isDirectory() && !entry.name.startsWith("_"));
+
+  const warnings = [];
+  if (!fs.existsSync(path.join(sourceRoot, "specs"))) {
+    warnings.push("specs/ 폴더가 없습니다.");
+  } else if (!hasFeatureFolders) {
+    warnings.push("specs/ 아래에 기능 폴더가 없습니다.");
+  }
+  if (!fs.existsSync(path.join(sourceRoot, "adr"))) {
+    warnings.push("adr/ 폴더가 없습니다. 중요한 결정 기록이 있으면 추가하세요.");
+  }
+  if (requiredFeatureFiles.length) {
+    warnings.push("기능 폴더에는 spec.md, plan.md, tasks.md, acceptance-tests.md, change-log.md가 필요합니다.");
+  }
+
+  return {
+    valid: missing.length === 0 && warnings.length === 0,
+    missing: [...new Set(missing)].sort(),
+    warnings,
+  };
+}
+
 function buildState() {
   const features = discoverFeatures();
+  const projectName = sourceProjectName();
   return {
     schemaVersion,
+    sourceProject: {
+      name: projectName,
+      path: sourceRoot,
+      isBoardProject: sourceRoot === boardRoot,
+    },
     project: {
-      name: "AI Project Control Board",
+      name: projectName,
       goal: extractSummary(readText("README.md"), "AI 프로젝트 템플릿을 시각화 보드로 연결한다."),
     },
+    structure: structureState(features),
     currentStage: currentStage(features),
     updatedAt: new Date().toISOString(),
     documents: coreDocumentPaths.map(coreDocument),
@@ -284,4 +350,6 @@ function buildState() {
 const state = buildState();
 writeJson(".control-board/state.json", state);
 writeJson("src/board-state.json", state);
-console.log(`Synced ${state.documents.length} core docs and ${state.features.length} feature specs.`);
+console.log(
+  `Synced ${state.documents.length} core docs and ${state.features.length} feature specs from ${state.sourceProject.name}.`,
+);

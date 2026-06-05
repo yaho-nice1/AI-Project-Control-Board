@@ -8,12 +8,15 @@
 - `node scripts/board-sync.js`가 실제 Markdown 파일을 읽어 `.control-board/state.json`과 `src/board-state.json`을 생성한다.
 - `AGENTS.md`, `docs/architecture.md`, `docs/coding-rules.md`, `docs/data-contracts.md`, `docs/testing-guide.md`가 `board-state.json`의 `documents`에 포함된다.
 - `specs/<feature-name>/tasks.md` 체크박스가 `board-state.json`의 task 상태로 반영된다.
+- `node scripts/board-init.js --project <path>`가 외부 프로젝트에 누락된 기본 템플릿 문서만 생성한다.
+- `node scripts/board-sync.js --project <path>`가 외부 프로젝트를 읽어 `sourceProject`, `structure`, 기능 상태를 보드 상태에 반영한다.
 - 후속 구현 전에도 기존 정적 보드는 깨지지 않는다.
 
 ## 자동 테스트
 
 ```bash
 node --check src/app.js
+node --check scripts/board-init.js
 node scripts/board-sync.js
 ./scripts/run_tests.sh
 ```

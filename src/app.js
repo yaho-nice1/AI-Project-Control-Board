@@ -26,6 +26,12 @@ const boardData = {
       "필요한 후속 작업",
     ],
   },
+  sourceProject: null,
+  structure: {
+    valid: true,
+    missing: [],
+    warnings: [],
+  },
   stages: [
     { id: "orient", label: "기준 확인", source: "AGENTS.md", status: "done" },
     { id: "spec", label: "요구사항", source: "specs/ai-workflow-control-board/spec.md", status: "active" },
@@ -506,6 +512,14 @@ function applyBoardStateFile(boardState) {
     return;
   }
 
+  if (boardState.project) {
+    boardData.project.name = boardState.project.name || boardData.project.name;
+    boardData.project.goal = boardState.project.goal || boardData.project.goal;
+    boardData.project.subtitle = boardState.sourceProject?.isBoardProject ? "AI Coding Workflow" : "External Project";
+  }
+  boardData.sourceProject = boardState.sourceProject || null;
+  boardData.structure = boardState.structure || boardData.structure;
+
   if (Array.isArray(boardState.documents) && boardState.documents.length) {
     const homeDocument = boardData.documents.find((document) => document.key === "home") || {
       key: "home",
@@ -794,7 +808,10 @@ function homeStageCards() {
 
 function render() {
   document.getElementById("workspaceTitle").textContent = currentNavItem().label;
-  document.getElementById("projectName").textContent = boardData.project.subtitle;
+  document.getElementById("projectName").textContent =
+    boardData.sourceProject && !boardData.sourceProject.isBoardProject
+      ? `${boardData.sourceProject.name} · External Project`
+      : boardData.project.subtitle;
 
   renderPrimaryNav();
   renderDocumentTabs();

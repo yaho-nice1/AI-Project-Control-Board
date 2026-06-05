@@ -14,6 +14,15 @@ AI Workflow Control Board는 `specs/`, `docs/`, `adr/`, `AGENTS.md`로 구성된
 node scripts/board-sync.js
 ```
 
+다른 Codex 프로젝트를 이 보드로 보려면 보드 프로젝트에서 대상 경로를 지정한다.
+
+```bash
+node scripts/board-init.js --project "/path/to/new-codex-project"
+node scripts/board-sync.js --project "/path/to/new-codex-project"
+```
+
+`board-init.js`는 대상 프로젝트에 없는 기본 템플릿 문서만 생성하고 기존 파일은 덮어쓰지 않는다. `board-sync.js --project`는 대상 프로젝트를 읽기만 하고 보드의 상태 JSON만 갱신한다.
+
 ## 구조
 
 ```text
