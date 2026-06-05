@@ -17,6 +17,7 @@
 - 상태 파일이 없어도 기존 정적 내장 데이터로 앱이 표시되어야 한다.
 - `AGENTS.md`, `docs/architecture.md`, `docs/coding-rules.md`, `docs/data-contracts.md`, `docs/testing-guide.md`는 실제 파일 내용에서 요약과 상태를 생성해야 한다.
 - Codex 작업 후 `node scripts/board-sync.js`를 실행하면 브라우저 새로고침으로 최신 문서 상태를 볼 수 있어야 한다.
+- 보드는 최근 수정 파일을 최신순으로 계산해 홈에서 한 줄 목록으로 확인할 수 있어야 한다.
 
 ## 범위
 
@@ -25,6 +26,7 @@
   - `.control-board/state.json` 초안 설계
   - 실제 Markdown 파일을 읽는 `scripts/board-sync.js`
   - 핵심 문서 5개와 기능별 spec 폴더 상태 스냅샷 생성
+  - 최근 수정 파일과 최근 수정된 기능 스냅샷 생성
   - 문서 상태와 태스크 상태의 화면 반영 기준
   - fallback 동작 정의
 - 제외:

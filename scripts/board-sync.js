@@ -12,6 +12,8 @@ const coreDocumentPaths = [
   "docs/testing-guide.md",
 ];
 const featureDocumentNames = ["spec.md", "plan.md", "tasks.md", "acceptance-tests.md", "change-log.md"];
+const activityRoots = ["AGENTS.md", "README.md", "docs", "specs", "adr", "scripts", "src", "tests"];
+const generatedActivityPaths = new Set([".control-board/state.json", "src/board-state.json"]);
 
 function readText(relativePath) {
   const fullPath = path.join(root, relativePath);
@@ -63,6 +65,82 @@ function fileUpdatedAt(relativePath) {
   return fs.existsSync(fullPath) ? fs.statSync(fullPath).mtime.toISOString() : null;
 }
 
+function fileLabel(relativePath) {
+  const featureMatch = relativePath.match(/^specs\/([^/]+)\/(.+)$/);
+  if (featureMatch) {
+    return `${kebabToTitle(featureMatch[1])} / ${featureMatch[2]}`;
+  }
+  return relativePath;
+}
+
+function fileFeature(relativePath) {
+  const featureMatch = relativePath.match(/^specs\/([^/]+)\//);
+  if (!featureMatch) {
+    return null;
+  }
+  return {
+    id: featureMatch[1],
+    title: kebabToTitle(featureMatch[1]),
+  };
+}
+
+function collectActivityFiles(targetPath) {
+  if (isGeneratedActivityPath(targetPath)) {
+    return [];
+  }
+
+  const fullPath = path.join(root, targetPath);
+  if (!fs.existsSync(fullPath)) {
+    return [];
+  }
+
+  const stats = fs.statSync(fullPath);
+  if (stats.isFile()) {
+    return [targetPath];
+  }
+
+  return fs
+    .readdirSync(fullPath, { withFileTypes: true })
+    .flatMap((entry) => {
+      if (entry.name.startsWith(".") || entry.name === "node_modules") {
+        return [];
+      }
+      const relativePath = `${targetPath}/${entry.name}`;
+      if (entry.isDirectory()) {
+        return collectActivityFiles(relativePath);
+      }
+      return entry.isFile() ? [relativePath] : [];
+    });
+}
+
+function recentActivity(limit = 6) {
+  const recentFiles = activityRoots
+    .flatMap(collectActivityFiles)
+    .filter((relativePath) => !relativePath.endsWith(".DS_Store") && !isGeneratedActivityPath(relativePath))
+    .map((relativePath) => {
+      const updatedAt = fileUpdatedAt(relativePath);
+      return {
+        path: relativePath,
+        label: fileLabel(relativePath),
+        feature: fileFeature(relativePath),
+        updatedAt,
+      };
+    })
+    .filter((file) => file.updatedAt)
+    .sort((first, second) => new Date(second.updatedAt) - new Date(first.updatedAt))
+    .slice(0, limit);
+
+  const focusFile = recentFiles.find((file) => file.feature);
+  return {
+    focusFeature: focusFile ? focusFile.feature : null,
+    recentFiles,
+  };
+}
+
+function isGeneratedActivityPath(relativePath) {
+  return generatedActivityPaths.has(relativePath);
+}
+
 function documentStatus(text) {
   if (text === null) {
     return "missing";
@@ -90,6 +168,7 @@ function coreDocument(relativePath) {
     path: relativePath,
     status: documentStatus(text),
     body: extractSummary(text, `${title} 문서가 아직 작성되지 않았다.`),
+    content: text || "",
     updatedAt: fileUpdatedAt(relativePath),
   };
 }
@@ -142,6 +221,7 @@ function featureState(featureName) {
       status: documentStatus(text),
       required: true,
       summary: extractSummary(text, `${name} 문서가 아직 작성되지 않았다.`),
+      content: text || "",
       updatedAt: fileUpdatedAt(relativePath),
     };
   });
@@ -196,6 +276,7 @@ function buildState() {
     currentStage: currentStage(features),
     updatedAt: new Date().toISOString(),
     documents: coreDocumentPaths.map(coreDocument),
+    activity: recentActivity(),
     features,
   };
 }

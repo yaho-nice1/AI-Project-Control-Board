@@ -80,6 +80,10 @@ const boardData = {
     { id: "check-impact-reviewed", label: "데이터 계약과 테스트 영향 여부를 검토했다" },
     { id: "check-agent-prompt", label: "AI coding agent 지시문에 완료 기준을 포함했다" },
   ],
+  activity: {
+    focusFeature: null,
+    recentFiles: [],
+  },
   kanban: [
     {
       column: "검토 필요",
@@ -516,6 +520,7 @@ function applyBoardStateFile(boardState) {
         title: document.title,
         path: document.path,
         body: document.body,
+        content: document.content || "",
         status: document.status,
       })),
     ];
@@ -523,7 +528,9 @@ function applyBoardStateFile(boardState) {
     documentStatuses.length = 0;
     documentStatuses.push(
       ...boardState.documents.map((document) => ({
+        key: document.key,
         title: document.title,
+        path: document.path,
         status: documentStatusLabel(document.status),
         tone: documentStatusTone(document.status),
       })),
@@ -565,6 +572,10 @@ function applyBoardStateFile(boardState) {
     })),
   );
 
+  boardData.activity = boardState.activity || {
+    focusFeature: null,
+    recentFiles: [],
+  };
   boardData.kanban = buildKanbanFromBoardState(boardState);
 }
 
@@ -660,12 +671,11 @@ function iconSvg(name) {
 }
 
 const documentStatuses = [
-  { title: "AGENTS.md", status: "완료", tone: "done" },
-  { title: "architecture.md", status: "완료", tone: "done" },
-  { title: "data-contracts.md", status: "검토 필요", tone: "review" },
-  { title: "coding-rules.md", status: "완료", tone: "done" },
-  { title: "testing-guide.md", status: "대기 중", tone: "waiting" },
-  { title: "deployment.md", status: "대기 중", tone: "waiting" },
+  { key: "agents", title: "AGENTS.md", path: "AGENTS.md", status: "완료", tone: "done" },
+  { key: "docs-architecture", title: "architecture.md", path: "docs/architecture.md", status: "완료", tone: "done" },
+  { key: "docs-data-contracts", title: "data-contracts.md", path: "docs/data-contracts.md", status: "검토 필요", tone: "review" },
+  { key: "docs-coding-rules", title: "coding-rules.md", path: "docs/coding-rules.md", status: "완료", tone: "done" },
+  { key: "docs-testing-guide", title: "testing-guide.md", path: "docs/testing-guide.md", status: "대기 중", tone: "waiting" },
 ];
 
 function taskStatusClass(status) {
@@ -720,6 +730,29 @@ function taskFeatureGroups() {
 
 function clampPercent(value) {
   return Math.max(0, Math.min(100, Math.round(Number(value) || 0)));
+}
+
+function relativeTime(updatedAt) {
+  if (!updatedAt) {
+    return "시간 없음";
+  }
+  const diffMs = Date.now() - new Date(updatedAt).getTime();
+  if (!Number.isFinite(diffMs)) {
+    return "시간 없음";
+  }
+  const diffMinutes = Math.max(0, Math.floor(diffMs / 60000));
+  if (diffMinutes < 1) {
+    return "방금 전";
+  }
+  if (diffMinutes < 60) {
+    return `${diffMinutes}분 전`;
+  }
+  const diffHours = Math.floor(diffMinutes / 60);
+  if (diffHours < 24) {
+    return `${diffHours}시간 전`;
+  }
+  const diffDays = Math.floor(diffHours / 24);
+  return `${diffDays}일 전`;
 }
 
 function homeStageCards() {
@@ -855,6 +888,14 @@ function renderScreen() {
     });
   });
 
+  content.querySelectorAll("[data-home-document-key]").forEach((button) => {
+    button.addEventListener("click", () => {
+      state.screen = "requirements";
+      state.documentKey = button.dataset.homeDocumentKey;
+      render();
+    });
+  });
+
   content.querySelectorAll("[data-close-task-modal]").forEach((button) => {
     button.addEventListener("click", (event) => {
       if (button.classList.contains("task-modal-backdrop") && event.target !== button) {
@@ -878,7 +919,6 @@ function renderScreen() {
 }
 
 function renderRequirementsHome() {
-  const progress = progressSummary();
   const stageCards = homeStageCards();
   return `
     <section class="page requirements-page">
@@ -900,22 +940,13 @@ function renderRequirementsHome() {
             .join("")}
         </div>
 
-        <article class="home-mini-panel checklist-mini">
+        <article class="home-mini-panel recent-mini">
           <header>
-            <h3>체크리스트</h3>
-            <span>${progress.done}/${progress.total}</span>
+            <h3>최근 수정</h3>
+            <span>${escapeHtml(boardData.activity.focusFeature ? boardData.activity.focusFeature.title : "전체")}</span>
           </header>
-          <div class="mini-checks">
-            ${boardData.checks
-              .map(
-                (check) => `
-                  <label class="mini-check-item">
-                    <input type="checkbox" data-check-id="${escapeHtml(check.id)}" ${state.checks[check.id] ? "checked" : ""}>
-                    <span>${escapeHtml(check.label)}</span>
-                  </label>
-                `,
-              )
-              .join("")}
+          <div class="recent-file-list">
+            ${renderRecentFiles()}
           </div>
         </article>
 
@@ -984,36 +1015,163 @@ function renderRequirementsHome() {
   `;
 }
 
+function renderRecentFiles() {
+  const recentFiles = boardData.activity.recentFiles || [];
+  if (!recentFiles.length) {
+    return `<span class="recent-empty">아직 동기화된 수정 내역이 없습니다.</span>`;
+  }
+
+  return recentFiles
+    .slice(0, 5)
+    .map(
+      (file) => `
+        <span class="recent-file-item" title="${escapeHtml(file.path)}">
+          <strong>${escapeHtml(file.label || file.path)}</strong>
+          <em>${escapeHtml(relativeTime(file.updatedAt))}</em>
+        </span>
+      `,
+    )
+    .join("");
+}
+
 function renderDocumentStatusRow(document) {
   const iconName = document.tone === "done" ? "check" : document.tone === "review" ? "alert" : "clock";
+  const documentKey = document.key || "";
   return `
-    <article class="document-status-row ${escapeHtml(document.tone)}">
+    <button type="button" class="document-status-row ${escapeHtml(document.tone)}" data-home-document-key="${escapeHtml(documentKey)}" title="${escapeHtml(document.path || document.title)}">
       <span class="status-icon">${iconSvg(iconName)}</span>
       <strong>${escapeHtml(document.title)}</strong>
       <em>${escapeHtml(document.status)}</em>
-    </article>
+    </button>
   `;
 }
 
 function renderMarkdownPreview() {
   const document = currentDocument();
+  const markdown = document.content || `# ${document.title}\n\n${document.body}`;
   return `
     <section class="page markdown-page">
-      <p class="eyebrow">Generated Document Preview</p>
+      <p class="eyebrow">Project Document</p>
       <h2>${escapeHtml(document.title)}</h2>
       <p class="doc-path">${escapeHtml(document.path)}</p>
       <article class="markdown-preview">
-        <h1>${escapeHtml(document.title)}</h1>
-        <p>${escapeHtml(document.body)}</p>
-        <h2>검토 질문</h2>
-        <ul>
-          <li>이 문서가 현재 프로젝트 단계와 연결되어 있는가?</li>
-          <li>비개발자가 다음 결정을 이해할 수 있는가?</li>
-          <li>AI coding agent에게 전달할 기준이 충분한가?</li>
-        </ul>
+        ${renderMarkdown(markdown)}
       </article>
     </section>
   `;
+}
+
+function renderMarkdown(markdown) {
+  const lines = String(markdown || "").split("\n");
+  const html = [];
+  let inList = false;
+  let inCode = false;
+  let codeLines = [];
+  let inTable = false;
+
+  const closeList = () => {
+    if (inList) {
+      html.push("</ul>");
+      inList = false;
+    }
+  };
+
+  const closeTable = () => {
+    if (inTable) {
+      html.push("</tbody></table>");
+      inTable = false;
+    }
+  };
+
+  const inline = (value) =>
+    escapeHtml(value)
+      .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
+      .replace(/`([^`]+)`/g, "<code>$1</code>");
+
+  lines.forEach((line, index) => {
+    if (line.startsWith("```")) {
+      if (inCode) {
+        html.push(`<pre><code>${escapeHtml(codeLines.join("\n"))}</code></pre>`);
+        codeLines = [];
+        inCode = false;
+      } else {
+        closeList();
+        closeTable();
+        inCode = true;
+      }
+      return;
+    }
+
+    if (inCode) {
+      codeLines.push(line);
+      return;
+    }
+
+    if (!line.trim()) {
+      closeList();
+      closeTable();
+      return;
+    }
+
+    const tableCells = line.trim().startsWith("|") ? line.trim().split("|").slice(1, -1).map((cell) => cell.trim()) : null;
+    const nextLine = lines[index + 1] || "";
+    const isHeaderSeparator = /^\|?\s*:?-{3,}:?\s*(\|\s*:?-{3,}:?\s*)+\|?$/.test(line.trim());
+    if (isHeaderSeparator) {
+      return;
+    }
+    if (tableCells && /^\|?\s*:?-{3,}:?/.test(nextLine.trim())) {
+      closeList();
+      closeTable();
+      html.push(`<table><thead><tr>${tableCells.map((cell) => `<th>${inline(cell)}</th>`).join("")}</tr></thead><tbody>`);
+      inTable = true;
+      return;
+    }
+    if (tableCells && inTable) {
+      html.push(`<tr>${tableCells.map((cell) => `<td>${inline(cell)}</td>`).join("")}</tr>`);
+      return;
+    }
+    closeTable();
+
+    const heading = line.match(/^(#{1,4})\s+(.+)$/);
+    if (heading) {
+      closeList();
+      const level = heading[1].length;
+      html.push(`<h${level}>${inline(heading[2])}</h${level}>`);
+      return;
+    }
+
+    const taskItem = line.match(/^[-*]\s+\[( |x|X)\]\s+(.+)$/);
+    if (taskItem) {
+      if (!inList) {
+        html.push("<ul>");
+        inList = true;
+      }
+      const checked = taskItem[1].toLowerCase() === "x";
+      html.push(`<li class="markdown-task ${checked ? "done" : ""}"><span>${checked ? "✓" : ""}</span>${inline(taskItem[2])}</li>`);
+      return;
+    }
+
+    const listItem = line.match(/^[-*]\s+(.+)$/);
+    if (listItem) {
+      if (!inList) {
+        html.push("<ul>");
+        inList = true;
+      }
+      html.push(`<li>${inline(listItem[1])}</li>`);
+      return;
+    }
+
+    closeList();
+    html.push(`<p>${inline(line)}</p>`);
+  });
+
+  closeList();
+  closeTable();
+  if (inCode) {
+    html.push(`<pre><code>${escapeHtml(codeLines.join("\n"))}</code></pre>`);
+  }
+
+  return html.join("");
 }
 
 function renderPlan() {

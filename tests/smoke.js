@@ -61,11 +61,25 @@ assert(app.includes("buildPrompt"), "Prompt generator is missing");
 assert(app.includes("featureProgressFromState"), "Feature progress calculator is missing");
 assert(app.includes("homeStageCards"), "Dynamic home stage cards are missing");
 assert(app.includes("buildKanbanFromBoardState"), "Feature-level kanban builder is missing");
+assert(app.includes("data-home-document-key"), "Home document rows must link to markdown previews");
+assert(app.includes("renderMarkdown"), "Full markdown renderer is missing");
 assert(app.includes("Allowed Files") || app.includes("변경 가능 파일"), "Allowed files prompt section is missing");
 assert(boardState.schemaVersion, "Board state schemaVersion is missing");
 assert(browserBoardState.schemaVersion === boardState.schemaVersion, "Browser board state schemaVersion must match source state");
 assert(Array.isArray(boardState.features), "Board state features must be an array");
 assert(Array.isArray(boardState.documents), "Board state core documents must be an array");
+assert(boardState.activity && Array.isArray(boardState.activity.recentFiles), "Board state recent activity is missing");
+assert(boardState.activity.recentFiles.length > 0, "Board state recent activity must include files");
+[".control-board/state.json", "src/board-state.json"].forEach((generatedPath) => {
+  assert(
+    !boardState.activity.recentFiles.some((file) => file.path === generatedPath),
+    `Generated state file should not appear in recent activity: ${generatedPath}`,
+  );
+});
+assert(
+  boardState.documents.every((document) => typeof document.content === "string"),
+  "Synced core documents must include full markdown content",
+);
 ["AGENTS.md", "docs/architecture.md", "docs/coding-rules.md", "docs/data-contracts.md", "docs/testing-guide.md"].forEach((documentPath) => {
   assert(boardState.documents.some((document) => document.path === documentPath), `Missing synced core document: ${documentPath}`);
 });

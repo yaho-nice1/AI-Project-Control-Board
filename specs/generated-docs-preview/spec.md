@@ -8,7 +8,7 @@ AI 템플릿은 `AGENTS.md`, `docs/architecture.md`, `docs/data-contracts.md` �
 
 - 요구사항 화면의 상단 작은 탭에서 홈과 주요 문서를 전환할 수 있어야 한다.
 - 문서 생성 현황은 모든 문서를 한 줄 row로 표시하고 상태를 색과 텍스트로 구분해야 한다.
-- 문서 미리보기는 Markdown 문서처럼 제목, 본문, 검토 질문을 보여줘야 한다.
+- 문서 미리보기는 실제 `AGENTS.md`와 `docs/*.md` 원문을 읽어 Markdown 본문으로 보여줘야 한다.
 - 계획 탭 기능 카드의 문서 pill은 해당 기능 폴더의 `spec.md`, `plan.md`, `tasks.md`, `acceptance-tests.md`, `change-log.md`와 연결되어야 한다.
 
 ## 범위
@@ -16,11 +16,10 @@ AI 템플릿은 `AGENTS.md`, `docs/architecture.md`, `docs/data-contracts.md` �
 - 포함:
   - 문서 탭
   - 문서 생성 현황 row
-  - Markdown 스타일 미리보기
+  - 실제 Markdown 본문 미리보기
   - 기능 카드의 문서 pill 표시
 - 제외:
   - 브라우저에서 Markdown 파일 직접 저장
-  - 실제 파일 시스템 자동 스캔
 
 ## 사용자 또는 downstream 영향
 

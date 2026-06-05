@@ -5,7 +5,7 @@
     "goal": "# AI Workflow Control Board"
   },
   "currentStage": "tasks",
-  "updatedAt": "2026-06-05T07:15:24.220Z",
+  "updatedAt": "2026-06-05T08:57:34.998Z",
   "documents": [
     {
       "key": "agents",
@@ -13,6 +13,7 @@
       "path": "AGENTS.md",
       "status": "done",
       "body": "이 문서는 AI Workflow Control Board 프로젝트에서 AI coding agent가 반드시 따라야 할 작업 규칙이다. 모든 변경은 템플릿 문서 구조에 근거해야 하며, 비개발자가 검토할 수 있는 형태로 범위, 이유, 검증 결과를 남겨야 한다.",
+      "content": "# AGENTS.md\n\n## 목적\n\n이 문서는 AI Workflow Control Board 프로젝트에서 AI coding agent가 반드시 따라야 할 작업 규칙이다. 모든 변경은 템플릿 문서 구조에 근거해야 하며, 비개발자가 검토할 수 있는 형태로 범위, 이유, 검증 결과를 남겨야 한다.\n\n## 작업 전 확인\n\n1. `README.md`를 읽고 프로젝트 목적과 실행 방법을 확인한다.\n2. `docs/architecture.md`, `docs/coding-rules.md`, `docs/data-contracts.md`를 확인한다.\n3. 기능 또는 변경 작업이 있다면 `specs/<feature-name>/`의 문서를 먼저 확인한다.\n4. 중요한 기술 결정과 충돌할 수 있는 변경은 `adr/`를 확인한다.\n\n## 작업 규칙\n\n- 변경 범위는 현재 spec 또는 요청에 필요한 파일로 제한한다.\n- `specs/<feature-name>/plan.md`의 Allowed Files 범위를 우선한다.\n- 새 기능을 구현할 때는 먼저 `specs/<feature-name>/` 폴더를 만들고 `spec.md`, `plan.md`, `tasks.md`, `acceptance-tests.md`, `change-log.md`를 작성한다.\n- `specs/ai-workflow-control-board/`는 제품 전체 기준 문서로 사용하고, 개별 UI/데이터/검증 기능 작업을 직접 누적하지 않는다.\n- 계획 화면에 표시되는 기능 카드는 실제 `specs/<feature-name>/` 경로와 1:1로 연결되어야 한다.\n- 보드에 표시되는 모든 단계는 실제 템플릿 파일 또는 문서 섹션과 연결한다.\n- 비개발자용 문구는 명령어보다 의사결정, 완료 기준, 검토 질문 중심으로 작성한다.\n- 데이터 모델, 저장 방식, downstream 영향이 바뀌면 `docs/data-contracts.md`와 관련 spec을 갱신한다.\n- 테스트 기준이 바뀌면 `docs/testing-guide.md`와 `specs/<feature-name>/acceptance-tests.md`를 갱신한다.\n- 배포나 운영 절차가 바뀌면 `docs/deployment.md` 또는 `docs/troubleshooting.md`를 갱신한다.\n- 중요한 기술적 의사결정은 `adr/`에 ADR로 기록한다.\n- 작업 완료 전 `node scripts/board-sync.js`를 실행해 `.control-board/state.json`과 `src/board-state.json`을 최신 문서 상태로 갱신한다.\n\n## 금지 사항\n\n- 명시적 승인 없이 사용자 변경사항을 되돌리지 않는다.\n- spec 없이 큰 구조 변경을 진행하지 않는다.\n- 화면만 만들고 실제 템플릿 문서와 연결하지 않은 상태로 완료했다고 보고하지 않는다.\n- 테스트 또는 검증 없이 완료했다고 보고하지 않는다.\n- 데이터 계약 위반 가능성을 무시하지 않는다.\n- 실제 문서를 바꿨는데 보드 상태 파일 갱신을 누락하지 않는다.\n\n## 완료 보고 형식\n\n작업 완료 시 다음 내용을 보고한다.\n\n- 변경한 파일\n- 실행한 테스트 또는 검증\n- 남은 위험 요소\n- 필요한 후속 작업\n",
       "updatedAt": "2026-06-04T11:50:46.166Z"
     },
     {
@@ -21,7 +22,8 @@
       "path": "docs/architecture.md",
       "status": "done",
       "body": "시스템 구조, 계층, 데이터 흐름을 설명한다. 구현자는 이 문서를 기준으로 컨트롤 보드의 책임과 템플릿 문서 간 연결 방식을 판단한다.",
-      "updatedAt": "2026-06-01T18:38:41.305Z"
+      "content": "# 아키텍처\n\n## 목적\n\n시스템 구조, 계층, 데이터 흐름을 설명한다. 구현자는 이 문서를 기준으로 컨트롤 보드의 책임과 템플릿 문서 간 연결 방식을 판단한다.\n\n## 시스템 개요\n\n- 사용자 또는 외부 시스템: 비개발자 프로젝트 리더, 기획자, 운영자, AI coding agent\n- 주요 애플리케이션: `src/index.html`에서 실행되는 로컬 정적 웹앱\n- 데이터 저장소: 브라우저 `localStorage`, `.control-board/state.json`, `src/board-state.json`, 템플릿 문서에서 가져온 fallback 데이터\n- 외부 연동: 현재 없음. Codex 작업 후 상태 동기화 파일을 새로고침해 관제판에 반영한다.\n\n## 계층 구조\n\n- 인터페이스 계층: `src/index.html`, `src/styles.css`\n- 애플리케이션 계층: `src/app.js`의 상태 파일 로딩, 단계 선택, 문서 미리보기, 기능/작업/최근 수정 렌더링\n- 도메인 계층: 워크플로우 단계, 템플릿 문서, 기능 spec, 작업 상태, 최근 수정 상태\n- 인프라 계층: `scripts/board-sync.js`, `localStorage`, 정적 파일 배포\n\n## 데이터 흐름\n\n```mermaid\nflowchart TD\n    Template[\"템플릿 문서\"] --> Model[\"보드 데이터 모델\"]\n    Model --> Board[\"워크플로우 보드\"]\n    Template --> Sync[\"board-sync.js\"]\n    Sync --> State[\".control-board/state.json\"]\n    State --> Snapshot[\"src/board-state.json\"]\n    Snapshot --> Board[\"워크플로우 보드\"]\n    Board --> Docs[\"문서 미리보기\"]\n    Board --> Activity[\"최근 수정 패널\"]\n    Agent[\"AI coding agent\"] --> Template\n```\n\n## 의존성 규칙\n\n- 보드 데이터는 실제 템플릿 파일 경로를 함께 보관한다.\n- 템플릿 문서의 의미가 바뀌면 보드 카드, 상태 동기화 규칙, 검증 기준을 함께 갱신한다.\n- 외부 빌드 도구 없이 실행 가능해야 한다.\n- 사용자 입력 저장은 브라우저 로컬 상태에 한정한다.\n- `.control-board/state.json`과 `src/board-state.json`은 생성 파일이며 최근 수정 목록의 사용자 관찰 대상에서는 제외한다.\n\n## 열린 질문\n\n- 여러 프로젝트를 동시에 관리하는 저장 형식은 후속 spec에서 정의한다.\n",
+      "updatedAt": "2026-06-05T08:47:38.480Z"
     },
     {
       "key": "docs-coding-rules",
@@ -29,6 +31,7 @@
       "path": "docs/coding-rules.md",
       "status": "done",
       "body": "코드 스타일, UI 규칙, 네이밍 규칙을 정의한다.",
+      "content": "# 코딩 규칙\n\n## 목적\n\n코드 스타일, UI 규칙, 네이밍 규칙을 정의한다.\n\n## 공통 규칙\n\n- 읽기 쉬운 이름을 사용하고 약어는 최소화한다.\n- 함수는 하나의 화면 동작 또는 데이터 변환 책임만 갖도록 작성한다.\n- 오류 메시지는 원인과 조치 방향을 알 수 있게 작성한다.\n- 설정값과 비밀값은 코드에 하드코딩하지 않는다.\n- 템플릿 파일 경로와 화면 문구가 어긋나지 않게 관리한다.\n\n## 프론트엔드 규칙\n\n- 기본 화면은 사용 가능한 보드여야 하며, 랜딩 페이지로 시작하지 않는다.\n- 비개발자에게 터미널 명령을 먼저 요구하지 않는다.\n- 카드에는 단계의 상태, 관련 파일, 완료 기준, 검토 질문을 함께 보여준다.\n- 색상은 상태를 구분하기 위한 보조 신호로 사용하고, 텍스트만으로도 의미가 전달되게 한다.\n- 고정 크기의 보드, 패널, 버튼은 내용이 바뀌어도 레이아웃이 흔들리지 않게 한다.\n\n## 네이밍 규칙\n\n- 파일과 디렉터리: `snake_case` 또는 웹 표준 파일명\n- JavaScript 함수와 변수: `camelCase`\n- JavaScript 상수: `UPPER_SNAKE_CASE`\n- CSS 클래스: 의미 중심의 `kebab-case`\n\n## 리뷰 기준\n\n- 변경 범위가 spec과 일치하는가\n- 템플릿 문서와 보드 화면이 같은 흐름을 말하는가\n- 비개발자가 다음 행동을 판단할 수 있는 완료 기준이 있는가\n- 테스트가 변경 위험에 비례하는가\n",
       "updatedAt": "2026-06-01T18:38:41.447Z"
     },
     {
@@ -37,7 +40,8 @@
       "path": "docs/data-contracts.md",
       "status": "done",
       "body": "보드가 다루는 워크플로우 단계, 문서, 체크리스트, 검증 결과의 구조를 정의한다. 데이터 구조가 바뀌면 이 문서를 먼저 또는 함께 갱신한다.",
-      "updatedAt": "2026-06-04T11:50:46.299Z"
+      "content": "# 데이터 계약\n\n## 목적\n\n보드가 다루는 워크플로우 단계, 문서, 체크리스트, 검증 결과의 구조를 정의한다. 데이터 구조가 바뀌면 이 문서를 먼저 또는 함께 갱신한다.\n\n## 엔티티 목록\n\n| 엔티티 | 목적 | 소유자 | downstream |\n| --- | --- | --- | --- |\n| BoardProject | 한 프로젝트의 이름, 목표, 진행률을 표현한다 | 앱 | 보드 헤더, AI 지시문 |\n| WorkflowStage | 요구사항, 계획, 작업, 검증 같은 진행 단계를 표현한다 | 앱 | 칸반 보드, 상세 패널 |\n| TemplateDocument | 실제 템플릿 파일과 요약, 원문 내용을 연결한다 | 앱 | 문서 라이브러리, 프롬프트 |\n| ChecklistItem | 사용자가 완료 여부를 표시하는 검토 항목이다 | 사용자 | 진행률, 검증 패널 |\n| QualityRule | 완료 전 확인해야 하는 품질 기준이다 | 앱 | 검증 패널, change-log |\n| FeatureSpec | `specs/<feature-name>/` 단위 기능 문서 묶음을 표현한다 | 앱 | 기능 계획, 작업 맵, AI 지시문 |\n| DocumentState | 기능별 문서의 존재 여부와 검토 상태를 표현한다 | 앱 또는 상태 파일 | 문서 생성 현황, 기능 카드 |\n| TaskState | 기능별 작업 상태와 상세 내용을 표현한다 | 앱 또는 상태 파일 | 작업 맵, 완료 보고 |\n| BoardStateFile | 동적 보드 상태 파일의 최상위 구조를 표현한다 | `.control-board/state.json` | 전체 보드, Codex 작업 요청 |\n| ActivityState | 최근 수정 파일과 최근 수정된 기능을 표현한다 | `.control-board/state.json` | 홈 최근 수정 패널 |\n\n## 필드 계약\n\n| 엔티티 | 필드 | 타입 | nullable | 허용값 / 제약 | 설명 |\n| --- | --- | --- | --- | --- | --- |\n| BoardProject | name | string | no | 1자 이상 | 프로젝트 이름 |\n| BoardProject | goal | string | no | 1자 이상 | 프로젝트 목적 |\n| WorkflowStage | id | string | no | 고유값 | 단계 식별자 |\n| WorkflowStage | title | string | no | 1자 이상 | 화면 표시 이름 |\n| WorkflowStage | source | string | no | 파일 경로 | 연결된 템플릿 파일 |\n| WorkflowStage | status | string | no | `ready`, `active`, `review`, `done` | 단계 상태 |\n| WorkflowStage | checks | array | no | 1개 이상 | 단계별 체크리스트 |\n| TemplateDocument | path | string | no | 파일 경로 | 템플릿 문서 위치 |\n| TemplateDocument | purpose | string | no | 1자 이상 | 문서 목적 |\n| TemplateDocument | content | string | no | Markdown 문자열 | 문서 탭에 표시할 실제 파일 원문 |\n| ChecklistItem | id | string | no | 고유값 | 체크 항목 식별자 |\n| ChecklistItem | label | string | no | 1자 이상 | 검토 항목 |\n| QualityRule | metric | string | no | 1자 이상 | 검증 기준 이름 |\n| QualityRule | expected | string | no | 1자 이상 | 기대 상태 |\n| FeatureSpec | id | string | no | `kebab-case` | 기능 식별자 |\n| FeatureSpec | path | string | no | `specs/<feature-name>/` | 기능 spec 폴더 경로 |\n| FeatureSpec | title | string | no | 1자 이상 | 화면 표시 기능명 |\n| FeatureSpec | status | string | no | `ready`, `active`, `review`, `done`, `blocked` | 기능 진행 상태 |\n| FeatureSpec | documents | array | no | 5개 이상 권장 | 기능에 연결된 문서 상태 목록 |\n| FeatureSpec | tasks | array | no | 0개 이상 | 기능에 연결된 작업 상태 목록 |\n| DocumentState | path | string | no | 파일 경로 | 문서 파일 경로 |\n| DocumentState | name | string | no | 파일명 | 화면 표시 문서명 |\n| DocumentState | status | string | no | `done`, `review`, `waiting`, `missing` | 문서 상태 |\n| DocumentState | required | boolean | no | true 또는 false | 필수 문서 여부 |\n| DocumentState | content | string | no | Markdown 문자열 | 기능 문서의 실제 파일 원문 |\n| TaskState | id | string | no | 고유값 | 작업 식별자 |\n| TaskState | featureId | string | no | `FeatureSpec.id` 참조 | 연결 기능 |\n| TaskState | title | string | no | 1자 이상 | 작업 제목 |\n| TaskState | status | string | no | `done`, `active`, `waiting`, `blocked`, `review` | 작업 상태 |\n| TaskState | source | string | no | 파일 경로 | 연결된 `tasks.md` 또는 문서 섹션 |\n| TaskState | criteria | string | yes | 문자열 | 완료 기준 |\n| BoardStateFile | schemaVersion | string | no | semver | 상태 파일 스키마 버전 |\n| BoardStateFile | documents | array | no | 핵심 문서 5개 이상 | `AGENTS.md`와 주요 `docs/*.md` 문서 상태 목록 |\n| BoardStateFile | currentStage | string | no | `WorkflowStage.id` 참조 | 현재 단계 |\n| BoardStateFile | features | array | no | `FeatureSpec[]` | 기능 상태 목록 |\n| BoardStateFile | activity | object | no | `ActivityState` | 최근 수정 내역 |\n| BoardStateFile | updatedAt | string | yes | ISO 8601 | 마지막 갱신 시각 |\n| ActivityState | focusFeature | object | yes | `{ id, title }` 또는 null | 최근 수정된 spec 파일 기준 기능 |\n| ActivityState | recentFiles | array | no | 최신순 1개 이상 | 최근 수정 파일 목록 |\n\n## 키와 관계\n\n- Primary key: `WorkflowStage.id`, `TemplateDocument.path`, `ChecklistItem.id`, `FeatureSpec.id`, `DocumentState.path`, `TaskState.id`\n- Foreign key: `ChecklistItem.stageId`는 `WorkflowStage.id`를 참조한다.\n- Foreign key: `TaskState.featureId`는 `FeatureSpec.id`를 참조한다.\n- Unique key: 문서 경로는 중복될 수 없다.\n- Index: 단계 순서는 `WorkflowStage.order`로 정렬한다.\n\n## Downstream 영향\n\n- 대시보드: 단계 상태와 체크리스트 완료율이 보드 진행률에 반영된다.\n- AI 지시문: 선택한 단계와 관련 문서가 프롬프트에 포함된다.\n- 리포트: `change-log.md` 초안과 완료 보고 형식에 사용된다.\n- 모델 또는 파이프라인: 현재 없음.\n- 문서 상태 동기화: `.control-board/state.json`이 있으면 내장 데이터보다 우선한다.\n- 최근 수정 패널: `.control-board/state.json.activity.recentFiles`를 최신순 한 줄 목록으로 표시한다.\n- 정적 서버 공개 범위가 `src/`로 제한될 때는 `.control-board/state.json`의 브라우저용 스냅샷인 `src/board-state.json`을 읽는다.\n- fallback: 상태 파일이 없거나 필수 필드가 누락되면 `src/app.js`의 내장 데이터를 사용한다.\n\n## 상태 파일 초안\n\n```json\n{\n  \"schemaVersion\": \"0.2.0\",\n  \"currentStage\": \"tasks\",\n  \"updatedAt\": \"2026-06-04T00:00:00+09:00\",\n  \"documents\": [\n    {\n      \"key\": \"agents\",\n      \"title\": \"AGENTS.md\",\n      \"path\": \"AGENTS.md\",\n      \"status\": \"done\",\n      \"body\": \"AI coding agent가 따라야 할 작업 규칙이다.\",\n      \"content\": \"# AGENTS.md\\n\\n## 목적\\n\\n...\",\n      \"updatedAt\": \"2026-06-04T00:00:00.000Z\"\n    }\n  ],\n  \"activity\": {\n    \"focusFeature\": {\n      \"id\": \"generated-docs-preview\",\n      \"title\": \"Generated Docs Preview\"\n    },\n    \"recentFiles\": [\n      {\n        \"path\": \"specs/generated-docs-preview/change-log.md\",\n        \"label\": \"Generated Docs Preview / change-log.md\",\n        \"feature\": {\n          \"id\": \"generated-docs-preview\",\n          \"title\": \"Generated Docs Preview\"\n        },\n        \"updatedAt\": \"2026-06-04T00:00:00.000Z\"\n      }\n    ]\n  },\n  \"features\": [\n    {\n      \"id\": \"workflow-visualization\",\n      \"path\": \"specs/workflow-visualization/\",\n      \"title\": \"Workflow Visualization\",\n      \"status\": \"review\",\n      \"documents\": [\n        {\n          \"path\": \"specs/workflow-visualization/spec.md\",\n          \"name\": \"spec.md\",\n          \"status\": \"review\",\n          \"required\": true,\n          \"content\": \"# Spec\\n\\n## 배경\\n\\n...\"\n        }\n      ],\n      \"tasks\": [\n        {\n          \"id\": \"screen-rendering\",\n          \"featureId\": \"workflow-visualization\",\n          \"title\": \"화면별 렌더링 구현\",\n          \"status\": \"active\",\n          \"source\": \"specs/workflow-visualization/tasks.md\",\n          \"criteria\": \"왼쪽 탭 클릭 시 한 화면에 하나의 기능만 표시되어야 한다.\"\n        }\n      ]\n    }\n  ]\n}\n```\n\n## 변경 절차\n\n1. 변경 이유와 범위를 spec에 기록한다.\n2. 데이터 필드 변경이 있으면 이 문서의 필드 계약을 갱신한다.\n3. 화면, 프롬프트 생성기, 테스트를 함께 갱신한다.\n4. `./scripts/run_tests.sh`로 계약 위반 가능성을 검증한다.\n",
+      "updatedAt": "2026-06-05T08:24:35.442Z"
     },
     {
       "key": "docs-testing-guide",
@@ -45,9 +49,51 @@
       "path": "docs/testing-guide.md",
       "status": "done",
       "body": "테스트 명령어와 변경 유형별 필수 테스트를 정의한다.",
+      "content": "# 테스트 가이드\n\n## 목적\n\n테스트 명령어와 변경 유형별 필수 테스트를 정의한다.\n\n## 기본 명령\n\n```bash\n./scripts/run_tests.sh\n```\n\n## 변경 유형별 필수 테스트\n\n| 변경 유형 | 필수 테스트 |\n| --- | --- |\n| 화면 구조 변경 | HTML/CSS 수동 검증, smoke test |\n| JavaScript 동작 변경 | `node --check`, smoke test |\n| 데이터 계약 변경 | 문서 계약 갱신 확인, smoke test |\n| 템플릿 문구 변경 | 관련 문서 경로와 보드 데이터 일치 확인 |\n| 문서 상태 동기화 변경 | `node scripts/board-sync.js`, `./scripts/run_tests.sh`, 브라우저 새로고침 확인 |\n| 배포 방식 변경 | 로컬 파일 실행, 정적 서버 실행 확인 |\n\n## 수동 검증\n\n자동 테스트로 확인하기 어려운 항목은 `specs/<feature-name>/acceptance-tests.md`에 수동 검증 절차와 결과를 기록한다.\n\n## 실패 시 처리\n\n1. 실패 테스트 이름과 원인을 기록한다.\n2. 문서 변경 때문인지 화면 구현 변경 때문인지 구분한다.\n3. 보드 데이터 문제라면 연결된 템플릿 파일 경로와 문구를 함께 확인한다.\n",
       "updatedAt": "2026-06-04T11:50:46.435Z"
     }
   ],
+  "activity": {
+    "focusFeature": null,
+    "recentFiles": [
+      {
+        "path": "README.md",
+        "label": "README.md",
+        "feature": null,
+        "updatedAt": "2026-06-05T08:57:29.281Z"
+      },
+      {
+        "path": "docs/screenshots/home-dashboard.png",
+        "label": "docs/screenshots/home-dashboard.png",
+        "feature": null,
+        "updatedAt": "2026-06-05T08:50:32.051Z"
+      },
+      {
+        "path": "docs/screenshots/document-preview1.png",
+        "label": "docs/screenshots/document-preview1.png",
+        "feature": null,
+        "updatedAt": "2026-06-05T08:50:32.048Z"
+      },
+      {
+        "path": "docs/screenshots/document-preview2.png",
+        "label": "docs/screenshots/document-preview2.png",
+        "feature": null,
+        "updatedAt": "2026-06-05T08:50:32.045Z"
+      },
+      {
+        "path": "docs/screenshots/feature.png",
+        "label": "docs/screenshots/feature.png",
+        "feature": null,
+        "updatedAt": "2026-06-05T08:50:32.042Z"
+      },
+      {
+        "path": "docs/screenshots/task-graph.png",
+        "label": "docs/screenshots/task-graph.png",
+        "feature": null,
+        "updatedAt": "2026-06-05T08:50:32.039Z"
+      }
+    ]
+  },
   "features": [
     {
       "id": "ai-workflow-control-board",
@@ -62,7 +108,8 @@
           "status": "done",
           "required": true,
           "summary": "AI 프로젝트 템플릿은 `AGENTS.md`, `docs/`, `specs/`, `adr/`, `scripts/`를 통해 AI coding agent가 안전하게 작업하도록 돕는다. 하지만 비개발자는 Markdown 문서, 파일 경로, 터미널 명령, 테스트 절차를 직접 따라가기 어렵다.",
-          "updatedAt": "2026-06-04T11:29:44.421Z"
+          "content": "# Spec\n\n## 배경\n\nAI 프로젝트 템플릿은 `AGENTS.md`, `docs/`, `specs/`, `adr/`, `scripts/`를 통해 AI coding agent가 안전하게 작업하도록 돕는다. 하지만 비개발자는 Markdown 문서, 파일 경로, 터미널 명령, 테스트 절차를 직접 따라가기 어렵다.\n\nAI Workflow Control Board는 이 템플릿의 실제 문서와 절차를 시각화해, 비개발자가 Codex 작업 중 프로젝트 상태, 기능 진행도, 최근 수정 파일을 한눈에 확인할 수 있게 만든다.\n\n이 폴더는 제품 전체 기준 문서다. 개별 기능 구현은 `specs/<feature-name>/` 아래에서 별도 관리한다.\n\n## 기능 spec 목록\n\n- `specs/workflow-visualization/`: 화면 전환, 홈 상태 요약, 칸반 보드, 작업 태스크 맵\n- `specs/generated-docs-preview/`: 문서 탭, 문서 생성 현황, Markdown 미리보기, 문서 pill 표시\n- `specs/validation-and-handoff/`: 테스트 기록, 변경 기록, ADR, Codex 작업 완료 보고 흐름\n- `specs/document-state-sync/`: 실제 spec 폴더와 `.control-board/state.json` 기반 상태 동기화\n\n## 요구사항\n\n- 템플릿의 핵심 문서인 `AGENTS.md`, `docs/architecture.md`, `docs/coding-rules.md`, `docs/data-contracts.md`, `docs/testing-guide.md`를 보드에서 확인할 수 있어야 한다.\n- 기능 단위 흐름은 `spec.md`, `plan.md`, `tasks.md`, `acceptance-tests.md`, `change-log.md` 순서를 따라야 한다.\n- 새 기능은 `specs/<feature-name>/` 폴더 아래에서 `spec.md`, `plan.md`, `tasks.md`, `acceptance-tests.md`, `change-log.md`로 관리되어야 한다.\n- 각 보드 카드는 연결된 템플릿 파일 경로, 목적, 검토 질문, 완료 조건을 보여줘야 한다.\n- 홈 화면은 최근 수정 파일을 최신순으로 보여주고 자동 생성 상태 파일은 제외해야 한다.\n- 진행률과 작업 보드는 실제 문서 상태와 `tasks.md` 체크박스 상태를 반영해야 한다.\n- 브라우저에서 바로 열 수 있어야 하며, 첫 버전은 빌드와 서버 실행을 요구하지 않는다.\n\n## 범위\n\n- 포함:\n  - 로컬 정적 웹앱\n  - 템플릿 문서 기반 워크플로우 보드\n  - 문서 라이브러리\n  - 최근 수정 내역 표시\n  - 기능별 진행률과 작업 상태 표시\n  - smoke test 스크립트\n- 제외:\n  - 실제 GitHub API 연동\n  - Markdown 파일 직접 저장\n  - 사용자 인증\n  - 다중 사용자 실시간 협업\n\n## 사용자 또는 downstream 영향\n\n- 비개발자는 파일 구조를 몰라도 Codex 작업 중 어떤 기능과 문서가 바뀌었는지 확인할 수 있다.\n- AI coding agent는 실제 spec 폴더와 상태 동기화 결과를 기준으로 작업 범위를 추적할 수 있다.\n- 프로젝트 리더는 변경 범위, 위험, 검증 기준을 문서와 보드 양쪽에서 확인할 수 있다.\n\n## 데이터 계약 영향\n\n- 테이블: 없음\n- 컬럼: 없음\n- 키: `WorkflowStage.id`, `TemplateDocument.path`, `ChecklistItem.id`\n- 허용값: 단계 상태는 `ready`, `active`, `review`, `done`만 허용한다.\n",
+          "updatedAt": "2026-06-05T08:47:53.770Z"
         },
         {
           "path": "specs/ai-workflow-control-board/plan.md",
@@ -70,6 +117,7 @@
           "status": "done",
           "required": true,
           "summary": "# Plan",
+          "content": "# Plan\n\n## 구현 전략\n\n1. 템플릿 내용을 반영한 프로젝트 기준 문서를 루트에 작성한다.\n2. 제품 전체 기준 문서는 `specs/ai-workflow-control-board/`에 두고, 개별 기능은 `specs/<feature-name>/`로 분리한다.\n3. 빌드 없는 정적 웹앱을 `src/`에 구현한다.\n4. `src/app.js`에 템플릿 문서 요약, 워크플로우 단계, 검증 기준, AI 지시문 생성 데이터를 넣는다.\n5. 체크리스트 상태는 `localStorage`에 저장한다.\n6. `scripts/run_tests.sh`와 `tests/smoke.js`로 기본 파일 구조와 JavaScript 구문을 검증한다.\n\n## Allowed Files\n\n이 작업에서 변경할 수 있는 파일 또는 디렉터리를 명시한다.\n\n- `AGENTS.md`\n- `README.md`\n- `docs/`\n- `specs/ai-workflow-control-board/`\n- `specs/workflow-visualization/`\n- `specs/generated-docs-preview/`\n- `specs/validation-and-handoff/`\n- `specs/document-state-sync/`\n- `adr/`\n- `scripts/`\n- `src/`\n- `tests/`\n- `.gitignore`\n\n## 리스크\n\n- 정적 앱은 실제 Markdown 파일을 자동 저장하지 못한다.\n- 보드에 내장된 템플릿 요약이 원본 문서 변경과 달라질 수 있다.\n- 브라우저 파일 실행 환경에서는 Clipboard API가 제한될 수 있다.\n\n## 롤백 계획\n\n- 앱 구현 파일은 `src/` 단위로 되돌린다.\n- 템플릿 문서 변경은 관련 spec과 함께 되돌린다.\n- 브라우저 로컬 상태 문제는 보드의 초기화 버튼으로 해결한다.\n",
           "updatedAt": "2026-06-04T11:29:44.561Z"
         },
         {
@@ -78,6 +126,7 @@
           "status": "done",
           "required": true,
           "summary": "# Tasks",
+          "content": "# Tasks\n\n- [x] AGENTS.md 확인\n- [x] README와 핵심 docs 확인\n- [x] ADR 확인\n- [x] 컨트롤 보드 spec 작성\n- [x] 컨트롤 보드 plan 작성\n- [x] 데이터 계약 작성\n- [x] 정적 웹앱 구현\n- [x] 체크리스트 상태 저장 구현\n- [x] AI 작업 지시문 생성 구현\n- [x] 테스트 스크립트 작성\n- [x] 브라우저 화면 검증\n- [x] 변경 로그 최종 갱신\n",
           "updatedAt": "2026-06-01T18:45:07.060Z"
         },
         {
@@ -86,6 +135,7 @@
           "status": "done",
           "required": true,
           "summary": "# Acceptance Tests",
+          "content": "# Acceptance Tests\n\n## 완료 기준\n\n- 보드는 브라우저에서 `src/index.html`을 열었을 때 바로 표시된다.\n- 워크플로우 단계는 `AGENTS.md`, `spec.md`, `plan.md`, `tasks.md`, `acceptance-tests.md`, `change-log.md`, `adr/` 흐름과 연결된다.\n- 각 단계에는 관련 파일 경로, 검토 질문, 완료 조건이 표시된다.\n- 체크리스트 선택 상태가 새로고침 후에도 유지된다.\n- AI 작업 지시문에는 작업 전 확인 문서, 변경 가능 파일, 완료 보고 형식이 포함된다.\n- `./scripts/run_tests.sh`가 통과한다.\n\n## 자동 테스트\n\n```bash\n./scripts/run_tests.sh\n```\n\n## 수동 검증\n\n- 보드에서 각 단계를 선택했을 때 상세 패널이 바뀌는지 확인한다.\n- 문서 라이브러리에서 핵심 템플릿 문서의 목적과 검토 질문을 확인한다.\n- 체크리스트를 선택하고 새로고침한 뒤 상태가 유지되는지 확인한다.\n- AI 지시문 복사 버튼 또는 텍스트 선택 복사가 가능한지 확인한다.\n\n## 데이터 품질 검증\n\n- 누락된 템플릿 경로: 0\n- source가 없는 단계: 0\n- 체크리스트가 없는 단계: 0\n- 허용되지 않은 상태값: 0\n",
           "updatedAt": "2026-06-01T18:38:42.841Z"
         },
         {
@@ -94,7 +144,8 @@
           "status": "done",
           "required": true,
           "summary": "# Change Log",
-          "updatedAt": "2026-06-04T11:40:50.488Z"
+          "content": "# Change Log\n\n## 2026-06-05\n\n### 변경 내용\n\n- 제품 설명을 입력형 워크플로우 앱이 아니라 Codex 작업 관제판 방향으로 정리했다.\n- 홈 체크리스트 영역을 최근 수정 패널로 교체하고, 자동 생성 상태 파일은 최근 수정 목록에서 제외했다.\n- 핵심 문서 원문, 기능별 spec 상태, 작업 진행률, 최근 수정 파일이 새로고침마다 반영되도록 상태 동기화 흐름을 정리했다.\n\n### 변경 이유\n\n- 비개발자가 직접 체크리스트를 관리하거나 프롬프트 생성 버튼을 누르는 흐름보다, Codex 작업 중 현재 프로젝트 상태를 옆에서 확인하는 관제판 역할이 실제 사용 목적에 더 맞다.\n\n### 테스트 결과\n\n- `./scripts/run_tests.sh` 통과.\n- 인앱 브라우저에서 최근 수정 패널, 문서 패널 테두리, 단계 카드 진행률 하단 정렬을 확인했다.\n\n### 남은 작업\n\n- 기능 추가는 보류하고, README와 상태 동기화 기준을 유지하며 실제 사용 중 필요한 개선만 후속 검토한다.\n\n## 2026-06-03\n\n### 변경 내용\n\n- 상단 내비게이션의 `Create Document`, `Copy Prompt`, `Report` 버튼을 제거했다.\n- 화면 프로젝트명을 `AI Project Control Board`로 변경하고 부제를 `AI Template Workflow`로 정리했다.\n- 전체 타입 스케일을 낮춰 제목, 좌측 탭, 문서 탭, 카드 본문이 과하게 크게 보이지 않도록 조정했다.\n- Tailwind 같은 외부 UI 프레임워크는 추가하지 않고 기존 정적 앱 구조의 CSS 컴포넌트를 정리했다.\n- 외부 UI 프레임워크 없이 색상 팔레트, 왼쪽 단계 탭, 문서 탭, 카드, 칸반, 테스트 기록, 변경 기록, ADR 화면의 시각 위계를 재정리했다.\n- 왼쪽 단계 탭은 `01`부터 `06`까지의 숫자형 흐름으로 바꾸고, 비기능성 `Filter`, `Define Tasks` 버튼은 제거했다.\n- 빈 칸반 열에는 `대기 중인 작업 없음` 상태를 표시하고, 보드 내 변경 기록에 `v0.8.3` UI polish 항목을 추가했다.\n- 검은 사이드바, 노란 브랜드 마크, 보라/주황 보조색은 제거하고 기존 오프화이트/세이지 그린 계열로 색상을 되돌렸다.\n- 작업 화면을 단순 노드 나열에서 `ROOT → 기능 → 태스크`가 선으로 연결되는 기능별 태스크 맵으로 변경했다.\n- 기존 `task.feature` 값을 기준으로 태스크를 기능별로 묶고, 태스크가 없는 기능에는 `태스크 연결 대기` 상태를 표시했다.\n- 태스크 맵에서는 전체 흐름을 우선 볼 수 있도록 기능/태스크 노드의 긴 설명을 줄이고, 작은 요약 카드 형태로 축소했다.\n- 완료 기준과 세부 리스트는 마인드맵 아래의 작업 상세 영역에 남겨두었다.\n- 좁은 화면에서도 기능 카드가 커지지 않도록 문서 파일명 뱃지를 `3 docs` 같은 문서 수 요약으로 바꿨다.\n- 태스크 노드는 상태와 작업명만 남겨 마인드맵의 전체 흐름이 먼저 보이도록 더 축소했다.\n- 태스크 맵의 작은 연결점은 제거하고, 좁은 화면에서 루트/기능/태스크 기준선이 같은 x축으로 이어지도록 선 정렬을 보정했다.\n- 왼쪽 내비게이션을 간단한 아이콘 rail 형태로 줄이고, 하단에 새로고침 버튼을 추가했다.\n- 홈 화면을 `완료 단계`, `현재 단계`, `다음 단계` 상태 카드와 진행 체크리스트, 1열 문서 생성 현황 리스트로 재구성했다.\n- 문서 생성 현황은 2열 카드가 아니라 기존 흐름을 유지한 세로형 한 줄 상태 row 리스트로 표시했다.\n- 홈 상단을 `완료 단계 / 현재 단계 / 다음 단계 / 진행 체크리스트 / 문서 생성 현황`이 한 줄에 놓이는 compact 요약 스트립으로 축소했다.\n- 홈의 메인을 다시 칸반 보드로 배치하고, 화면 높이에 맞춰 칸반 영역이 중심이 되도록 조정했다.\n- 왼쪽 내비게이션 하단의 진행률과 초기화 버튼을 제거하고 새로고침 버튼만 남겼다.\n- 칸반 보드 컬럼 제목을 상태별 포인트색 pill 형태로 변경해 `검토 필요`, `진행 중`, `승인됨`, `막힘`을 쉽게 구분하도록 했다.\n- 홈 상단 단계 카드에 상태별 배경과 작은 진행률 바를 추가했다.\n- 체크리스트와 문서 생성 현황은 실제 항목 개수와 맞도록 전체 항목을 렌더링하고, 문서 현황은 기존 한 줄 row UI 안에서 세로 스크롤로 확인할 수 있게 했다.\n- 칸반 보드 컬럼 제목 pill이 줄바꿈되어 세로로 보이지 않도록 가로 표시를 고정했다.\n- 홈 상단 단계 카드는 강한 배경색을 제거하고 흰 카드, 얇은 테두리, 진행률 바 중심의 심플한 스타일로 정리했다.\n- 칸반 보드 컬럼 제목 pill은 텍스트가 안에 안정적으로 들어가도록 최소 폭, 패딩, 글자 크기를 조정했다.\n- 계획 탭의 상단 설명 문구를 제거하고, 기능별 `spec`, `plan`, `tasks`, `acceptance-tests`, `change-log` 정보를 하나의 카드 안에서 확인하도록 재구성했다.\n- 계획 탭 기능 카드는 상태 pill, 기능 코드, 위험도, 관련 문서, 작업 진행률, 다음 액션을 한 카드에 표시하도록 변경했다.\n- 계획 탭 제목을 `기능 계획`으로 변경하고, 화면용 기능 번호 대신 `specs/<feature-name>/` 실제 경로를 표시하도록 바꿨다.\n- 기능 구현 문서를 `specs/workflow-visualization/`, `specs/generated-docs-preview/`, `specs/validation-and-handoff/`로 분리하고 각 폴더에 `spec.md`, `plan.md`, `tasks.md`, `acceptance-tests.md`, `change-log.md`를 추가했다.\n- `specs/ai-workflow-control-board/`는 제품 전체 기준 문서로 역할을 재정의하고 기능 spec 목록을 추가했다.\n- `AGENTS.md`에 새 기능은 반드시 `specs/<feature-name>/` 폴더로 관리한다는 규칙을 보강했다.\n- 테스트 스크립트와 smoke test가 새 기능 spec 폴더 존재와 참조를 확인하도록 갱신했다.\n- 기능 계획 카드의 경로는 제목 위에 얇은 텍스트로 표시하고, 문서 pill은 `spec.md`, `plan.md`처럼 짧은 파일명으로 다시 정리했다.\n- 기능별 spec 폴더 사용 결정을 `adr/0002-feature-scoped-specs.md`로 기록하고 결정 기록 화면에 연결했다.\n- 기능 계획 카드의 경로 텍스트를 상태 pill 옆 위치로 되돌리되, 굵지 않은 일반 텍스트로 표시하도록 조정했다.\n- 기능 계획 카드의 문서 pill 색상은 기능 전체 상태가 아니라 문서별 상태를 따르도록 변경했다.\n- 작업 탭을 기능별 태스크 연결도 중심으로 단순화하고, 태스크 상세는 클릭 시 팝업으로 표시하도록 변경했다.\n- 작업 탭의 태스크 연결선을 기능별 1:N 마인드맵 구조로 보정해 긴 선이 화면 밖으로 빠져나가지 않도록 했다.\n- 작업 탭 연결선을 SVG path 기반으로 전환해 기능과 태스크 노드 사이를 더 자연스럽게 연결하도록 했다.\n- 테스트, 변경 기록, 결정 기록 화면을 결정 기록 기준의 compact 카드 디자인으로 통일하고 5개 단위 페이지네이션을 추가했다.\n- 실제 문서 상태 연동을 위한 `specs/document-state-sync/` 기능 spec을 추가하고 `.control-board/state.json` 데이터 계약 초안을 정의했다.\n- `.control-board/state.json` 예시 파일과 상태 파일 smoke test를 추가했다.\n- 앱 시작 시 `.control-board/state.json`을 읽어 기능 계획과 작업 맵 데이터에 반영하도록 연결했다.\n- 브랜드 마크를 `HC`로 변경하고 부제를 `AI Coding Workflow`로 변경했다.\n- 작업 상세 팝업 닫기 아이콘이 보이도록 아이콘 버튼 SVG 스타일을 보강했다.\n- 계획 탭 기능 카드의 padding, 제목 크기, footer 여백을 줄여 더 compact하게 조정했다.\n- 정적 브라우저 캐시로 이전 `app.js`와 `styles.css`가 남지 않도록 asset URL에 버전 쿼리를 추가했다.\n- 브라우저 탭 favicon을 사이드바 브랜드와 일치하는 `HC` 마크로 변경하고 캐시 방지 버전을 추가했다.\n\n### 변경 이유\n\n- 상단 버튼이 현재 단계 탐색보다 강하게 보여 사용자가 문서/단계 흐름을 읽는 데 방해가 됐다.\n- Stitch 3차 화면의 큰 타이포그래피가 실제 앱에서는 정보 밀도를 떨어뜨려 한 화면에서 진행 상태를 보기 어렵게 만들었다.\n- ADR-0001의 로컬 우선 정적 앱 결정을 유지하면서 디자인 일관성을 높여야 한다.\n- 현재 단계에서는 동적 데이터 연동보다 비개발자가 흐름과 상태를 읽기 쉬운 정적 시각화 품질을 먼저 높이는 것이 안전하다.\n- 작업 화면은 사용자가 어떤 기능의 어떤 작업을 진행 중인지 시각적으로 추적할 수 있어야 하므로, 기능과 태스크 간 연결선이 필요하다.\n- 태스크 맵은 상세 설명보다 전체 방향과 연결 관계를 빠르게 읽는 화면이어야 한다.\n- 마인드맵 연결선은 개별 카드보다 관계를 먼저 인식하게 해야 하므로 선의 연속성이 중요하다.\n- 홈 화면은 상세 작업보다 현재 상태와 다음 단계를 먼저 판단할 수 있어야 한다.\n- 문서 생성 현황은 많은 문서를 빠르게 훑을 수 있도록 카드형 그리드보다 한 줄 리스트가 적합하다.\n- 홈에서 실제 작업의 중심은 칸반 보드이므로, 단계/문서/체크리스트는 보조 정보로 축소되어야 한다.\n- 칸반 컬럼 상태는 작업 판단의 핵심 신호이므로 제목에 색상 강조가 필요하다.\n- 단계 카드, 체크리스트, 문서 현황은 보조 정보지만 실제 진행 개수와 화면 표시 개수가 어긋나면 사용자가 상태를 오해할 수 있다.\n- 칸반 컬럼 제목은 상태 판단용 라벨이므로 좁은 컬럼에서도 가로 pill 형태를 유지해야 한다.\n- 단계 카드는 홈 상단의 보조 상태 요약이므로 강한 배경색보다 간결한 카드와 진행률 바가 전체 화면과 더 잘 어울린다.\n- 계획 화면은 문서 종류별 분리보다 기능 단위의 진행 상태를 먼저 보여줘야 사용자가 어떤 기능이 어디까지 준비됐는지 빠르게 판단할 수 있다.\n- 기능 카드는 실제 템플릿 문서 구조와 연결되어야 하므로 임의의 `F-001` 코드보다 `specs/<feature-name>/` 경로 표시가 더 명확하다.\n- 제품 전체 spec과 기능별 spec을 분리해야 이후 기능 구현, 검증, 변경 로그가 실제 템플릿 흐름과 일치한다.\n- 경로는 이미 카드 상단에서 보여주므로 문서 pill까지 전체 경로를 반복하면 정보 밀도가 과해진다.\n- 기능별 spec 분리는 앞으로의 작업 방식에 영향을 주는 결정이므로 ADR로 남겨야 한다.\n- 검토 필요 기능 안에서도 모든 문서가 검토 대상은 아니므로, 실제 검토가 필요한 문서만 색으로 강조해야 한다.\n- 작업 화면에서는 기능과 태스크의 관계를 먼저 읽어야 하므로, 기능 노드의 보조 정보와 하단 고정 상세 리스트를 줄여야 한다.\n- 기능과 태스크는 일렬 목록이 아니라 하나의 기능에서 여러 태스크로 분기되는 관계로 보여야 한다.\n- 향후 노드 드래그나 동적 배치를 고려하면 CSS pseudo 선보다 SVG 연결선이 확장에 적합하다.\n- 테스트/로그/ADR 기록은 계속 누적될 수 있으므로 5개 단위 페이지네이션으로 검토 밀도를 관리해야 한다.\n- 정적 내장 데이터만으로는 실제 Markdown 문서 준비 상태와 보드 표시 상태가 어긋날 수 있으므로 상태 동기화 계약이 필요하다.\n- 상태 파일 기반 표시가 시작되어야 이후 Codex 작업 요청과 실제 문서 상태를 같은 데이터 기준으로 연결할 수 있다.\n\n### 테스트 결과\n\n- `node --check src/app.js` 통과.\n- `./scripts/run_tests.sh` 통과.\n- 로컬 서버 HTML에서 `AI Project Control Board`, `AI Template Workflow` 표시 확인.\n- 로컬 서버 HTML에서 `Create Document`, `Copy Prompt`, `Report` 상단 버튼이 제거된 상태 확인.\n- 로컬 서버 CSS에서 축소된 페이지 제목 크기(`font-size: 32px`) 확인.\n- 초기 인앱 브라우저 연결은 끊겼으나 새 탭으로 복구해 작업 화면 검증을 진행했다.\n- `node --check src/app.js` 재통과.\n- `./scripts/run_tests.sh` 재통과.\n- `node --check src/app.js` 재통과.\n- `./scripts/run_tests.sh` 재통과.\n- `node --check src/app.js` 재통과.\n- `./scripts/run_tests.sh` 재통과.\n- `node --check src/app.js` 재통과.\n- `./scripts/run_tests.sh` 재통과.\n- `node --check src/app.js` 재통과.\n- `./scripts/run_tests.sh` 재통과.\n- `node --check src/app.js` 재통과.\n- `./scripts/run_tests.sh` 재통과.\n- `node --check src/app.js` 재통과.\n- `./scripts/run_tests.sh` 재통과.\n- `node --check src/app.js` 재통과.\n- `./scripts/run_tests.sh` 재통과.\n- `node --check src/app.js` 재통과.\n- `./scripts/run_tests.sh` 재통과.\n- `node --check src/app.js` 재통과.\n- `./scripts/run_tests.sh` 재통과.\n- `node --check src/app.js` 재통과.\n- `./scripts/run_tests.sh` 재통과.\n- 로컬 정적 서버 `http://127.0.0.1:4173/` 응답 `200 OK` 확인.\n- 인앱 브라우저 자동화 경로가 없어 스크린샷 검증은 완료하지 못했다.\n- 인앱 브라우저에서 compact 요약 스트립, 단계 chip 3개, 체크리스트 3개, 문서 row 4개, 메인 칸반 컬럼 4개, 하단 새로고침 버튼 1개, 초기화 버튼 제거, 가로 overflow 0을 확인했다.\n- 인앱 브라우저에서 축소된 태스크 맵 렌더링, 기능 노드 85px, 태스크 노드 61px, 가로 overflow 0을 확인했다.\n- 인앱 브라우저에서 보정된 태스크 맵 연결선 렌더링, 2px 연결선, 접점 제거, 가로 overflow 0을 확인했다.\n- 인앱 브라우저에서 루트 연결선과 브랜치 기준선이 모두 `22px` 위치로 정렬되고 점 pseudo-element가 제거된 것을 확인했다.\n- 인앱 브라우저에서 작업 화면의 `.task-map` 렌더링, 기능 그룹 3개, 태스크/대기 노드 4개, 가로 overflow 0을 확인했다.\n- 로컬 정적 서버 `http://127.0.0.1:4173/` 응답 `200 OK` 확인.\n- `node --check src/app.js` 재통과.\n- `./scripts/run_tests.sh` 재통과.\n- `node --check src/app.js` 재통과.\n- `./scripts/run_tests.sh` 재통과.\n\n### 남은 작업\n\n- 실제 브라우저 화면에서 축소된 타입 스케일과 상단 탭 밀도를 최종 확인한다.\n- 향후 동적 보드 전환 시 `.control-board/state.json` 같은 상태 파일 기반 데이터 계약을 별도 spec으로 정의한다.\n- 실제 브라우저 화면에서 오프화이트 사이드바, 숫자형 단계 탭, 문서 탭 pill 스타일, 칸반 빈 상태의 시각 균형을 최종 확인한다.\n- 실제 프로젝트 데이터가 늘어날 때 기능별 태스크 맵의 노드 밀도와 클릭 상세 전환 방식을 후속 검토한다.\n- 태스크 맵 노드 클릭 시 작업 상세를 띄우거나 해당 문서로 바로 가는 상호작용을 후속 검토한다.\n\n## 2026-06-02\n\n### 변경 내용\n\n- AI Workflow Control Board의 루트 문서 구조를 템플릿 흐름에 맞게 작성했다.\n- 비개발자용 워크플로우 보드의 spec, plan, tasks, acceptance-tests를 작성했다.\n- 로컬 우선 정적 보드 사용 결정을 ADR로 기록했다.\n- `src/index.html`, `src/styles.css`, `src/app.js`로 실행 가능한 정적 보드를 구현했다.\n- 템플릿 문서 라이브러리, 단계별 체크리스트, AI 작업 지시문 생성, 완료 보고 형식 복사를 추가했다.\n- `scripts/run_tests.sh`와 `tests/smoke.js`로 기본 검증을 추가했다.\n- Stitch 디자인 패키지의 다크 운영 보드 스타일을 `src/styles.css`에 1차 적용했다.\n- Stitch 2차 디자인 패키지의 오프화이트 문서형 UI와 세이지 그린 스타일을 `src/styles.css`에 적용했다.\n- Manyfast AI 기획 흐름을 반영해 첫 화면을 보드 카드 나열에서 AI Planning Editor 구조로 재설계했다.\n- 상단 CTA, 왼쪽 compact workflow, 중앙 document draft, 오른쪽 AI Helper와 coding agent prompt preview를 추가했다.\n- Stitch 3차 디자인 패키지의 6개 화면을 참고해 요구사항, 계획, 작업, 테스트, 변경 기록, 결정 기록 전용 화면 구조로 재구성했다.\n- 요구사항 홈에 문서 탭, 현재 진행률, 생성 문서 상태, 칸반 작업 보드를 배치했다.\n- 계획 화면은 기능별 spec/plan 카드, 작업 화면은 작업 흐름과 상세 리스트, 테스트/로그/ADR은 최신순 기록형 화면으로 정리했다.\n\n### 변경 이유\n\n- 단순히 템플릿 흐름을 설명하는 것을 넘어, 실제 템플릿 문서와 연결된 시각화 프로젝트가 필요하다.\n- 받은 디자인을 현재 정적 앱 구조와 데이터 연결을 유지한 상태로 먼저 확인할 수 있어야 한다.\n- 1차 다크 대시보드보다 2차 디자인의 문서 중심 검토 화면이 비개발자 승인 흐름에 더 가까운지 확인할 필요가 있다.\n- 비개발자에게 파일 구조를 먼저 보여주기보다 아이디어, AI 초안, 검토, 승인, 코딩 에이전트 전달 순서가 먼저 보여야 한다.\n- 사용자는 한 화면에서 하나의 큰 기능만 보고, 왼쪽 큰 탭으로 요구사항부터 ADR까지 이동할 수 있어야 한다.\n\n### 테스트 결과\n\n- `./scripts/run_tests.sh` 통과.\n- 브라우저에서 `http://127.0.0.1:4173/` 로드 확인.\n- 보드 단계 8개와 템플릿 문서 9개 표시 확인.\n- 체크리스트 상태가 새로고침 후 유지되는지 확인.\n- AI 지시문에 `AGENTS.md`, 변경 가능 파일, 완료 보고 형식이 포함되는지 확인.\n- 자동 브라우저 환경에서는 Clipboard API가 제한되어 fallback 안내가 표시되는 것을 확인.\n- Stitch 스타일 1차 적용 후 `./scripts/run_tests.sh` 통과.\n- 브라우저에서 데스크톱 폭 기준 가로 overflow 없음, 단계 카드 8개와 문서 9개 표시 확인.\n- `AI 지시문` 탭 전환, 변경 가능 파일 섹션 포함, 체크리스트 새로고침 유지 확인.\n- Stitch 2차 스타일 적용 후 `./scripts/run_tests.sh` 통과.\n- `node --check src/app.js` 통과.\n- `http://127.0.0.1:4173/` 정적 서버 응답 `200 OK` 확인.\n- 브라우저 자동화 라우트가 세션에서 끊겨 자동 스크린샷 검증은 완료하지 못했다.\n- AI Planning Editor 구조 변경 후 `./scripts/run_tests.sh` 통과.\n- `node --check src/app.js` 통과.\n- 로컬 서버 HTML에서 `AI Planning Editor`, `Prepare Coding Agent Prompt`, `No changes are applied without approval`, `assistant-panel` 표시 확인.\n- 로컬 서버 CSS에서 `editor-shell`, `draft-page`, `assistant-panel` 구조 확인.\n- Stitch 3차 구조 적용 후 `./scripts/run_tests.sh` 통과.\n- `node --check src/app.js` 통과.\n- `http://127.0.0.1:4173/` 정적 서버 응답 `200 OK` 확인.\n- 로컬 서버 HTML에서 `Project Zen`, `stageNav`, `documentTabs`, `mainContent` 구조 확인.\n- 로컬 서버 app.js에서 `Project Roadmap`, `작업 흐름 및 실행`, `테스트 기록`, `변경 기록`, `Architecture Decision Records` 렌더링 문구 확인.\n\n### 남은 작업\n\n- 실제 Markdown 파일 직접 저장 기능은 후속 spec에서 다룬다.\n- 여러 프로젝트 관리와 GitHub 연동은 후속 설계가 필요하다.\n- AI Helper의 승인, 편집, 반려 버튼은 현재 toast 기반 mock 동작이며 실제 문서 직접 수정 기능은 후속 spec에서 다룬다.\n- 현재 화면은 내장 데이터 기반 시각화이며 실제 Markdown 파일 직접 읽기와 저장은 후속 spec에서 다룬다.\n- Stitch 3차 적용 후에도 실제 화면의 여백과 카드 밀도는 사용자가 브라우저에서 최종 확인해야 한다.\n",
+          "updatedAt": "2026-06-05T08:48:04.183Z"
         }
       ],
       "tasks": [
@@ -209,7 +260,8 @@
           "status": "done",
           "required": true,
           "summary": "현재 보드는 `src/app.js` 안의 내장 데이터로 기능, 문서, 태스크, 기록 상태를 표시한다. 하지만 실제 프로젝트 진행도를 보려면 `specs/<feature-name>/` 폴더와 각 Markdown 문서의 존재 여부, 검토 상태, 태스크 상태가 화면에 반영되어야 한다.",
-          "updatedAt": "2026-06-04T11:50:46.572Z"
+          "content": "# Spec\n\n## 배경\n\n현재 보드는 `src/app.js` 안의 내장 데이터로 기능, 문서, 태스크, 기록 상태를 표시한다. 하지만 실제 프로젝트 진행도를 보려면 `specs/<feature-name>/` 폴더와 각 Markdown 문서의 존재 여부, 검토 상태, 태스크 상태가 화면에 반영되어야 한다.\n\n이 기능은 정적 시각화 보드를 실제 템플릿 문서 구조와 연결하는 첫 단계다.\n\n## 요구사항\n\n- 보드는 `specs/<feature-name>/` 폴더를 기능 단위로 인식해야 한다.\n- 각 기능 폴더의 `spec.md`, `plan.md`, `tasks.md`, `acceptance-tests.md`, `change-log.md` 존재 여부를 문서 상태로 표시해야 한다.\n- 문서 상태는 완료, 검토 필요, 대기 중, 누락으로 구분해야 한다.\n- 태스크 상태는 기능별 `tasks.md` 또는 상태 파일에서 읽어 보드에 반영할 수 있어야 한다.\n- 동적 상태는 `.control-board/state.json` 같은 명시적 상태 파일로 저장할 수 있어야 한다.\n- `src/`만 정적 서버로 공개하는 환경에서는 `src/board-state.json` 스냅샷을 읽어 같은 상태를 표시할 수 있어야 한다.\n- 상태 파일이 없어도 기존 정적 내장 데이터로 앱이 표시되어야 한다.\n- `AGENTS.md`, `docs/architecture.md`, `docs/coding-rules.md`, `docs/data-contracts.md`, `docs/testing-guide.md`는 실제 파일 내용에서 요약과 상태를 생성해야 한다.\n- Codex 작업 후 `node scripts/board-sync.js`를 실행하면 브라우저 새로고침으로 최신 문서 상태를 볼 수 있어야 한다.\n- 보드는 최근 수정 파일을 최신순으로 계산해 홈에서 한 줄 목록으로 확인할 수 있어야 한다.\n\n## 범위\n\n- 포함:\n  - 실제 spec 폴더와 보드 데이터의 연결 계약 정의\n  - `.control-board/state.json` 초안 설계\n  - 실제 Markdown 파일을 읽는 `scripts/board-sync.js`\n  - 핵심 문서 5개와 기능별 spec 폴더 상태 스냅샷 생성\n  - 최근 수정 파일과 최근 수정된 기능 스냅샷 생성\n  - 문서 상태와 태스크 상태의 화면 반영 기준\n  - fallback 동작 정의\n- 제외:\n  - 브라우저에서 Markdown 파일 직접 저장\n  - GitHub API 연동\n  - 여러 프로젝트 동시 관리\n  - 자동 파일 감시 watcher\n\n## 사용자 또는 downstream 영향\n\n- 비개발자는 실제 문서가 준비됐는지, 어떤 문서가 검토 필요한지 보드에서 확인할 수 있다.\n- AI coding agent는 기능별 spec 폴더와 상태 파일을 기준으로 작업 전 범위를 판단할 수 있다.\n- 이후 Codex 작업 요청 생성 기능은 선택된 기능과 태스크의 실제 문서 경로를 포함할 수 있다.\n\n## 데이터 계약 영향\n\n- `FeatureSpec`, `DocumentState`, `TaskState`, `BoardStateFile` 엔티티가 추가된다.\n- 상태 파일 경로는 `.control-board/state.json`을 기본값으로 한다.\n- 상태 파일 변경은 계획, 작업, 문서 생성 현황, 작업 맵, Codex 작업 요청 생성 흐름에 영향을 준다.\n",
+          "updatedAt": "2026-06-05T08:24:42.723Z"
         },
         {
           "path": "specs/document-state-sync/plan.md",
@@ -217,6 +269,7 @@
           "status": "done",
           "required": true,
           "summary": "# Plan",
+          "content": "# Plan\n\n## 구현 전략\n\n1. `docs/data-contracts.md`에 실제 문서 상태 동기화를 위한 엔티티를 추가한다.\n2. `.control-board/state.json`의 필드와 fallback 규칙을 정의한다.\n3. 정적 앱 구조를 유지하면서 `scripts/board-sync.js`가 실제 Markdown 파일을 읽어 상태 스냅샷을 생성한다.\n4. `src/app.js`의 내장 feature/docs/tasks 데이터를 상태 파일 기반 모델로 교체한다.\n5. 상태 파일이 없거나 일부 필드가 누락되면 현재 내장 데이터를 fallback으로 사용한다.\n6. `src/board-state.json`은 브라우저가 읽는 스냅샷이고 `.control-board/state.json`은 원본 상태 파일로 둔다.\n\n## Allowed Files\n\n- `docs/data-contracts.md`\n- `specs/document-state-sync/`\n- `specs/ai-workflow-control-board/`\n- `scripts/`\n- `tests/`\n- `src/`\n- `.control-board/`\n- `src/board-state.json`\n- `AGENTS.md`\n\n## 리스크\n\n- 정적 브라우저 앱은 보안 제한 때문에 로컬 파일 시스템을 직접 스캔하기 어렵다.\n- 상태 파일을 자동으로 읽으려면 로컬 서버 또는 빌드/프리프로세스 단계가 필요할 수 있다.\n- Markdown 문서를 파싱해 태스크 상태를 추출하는 규칙이 불명확하면 화면 상태가 흔들릴 수 있다.\n- `board-sync` 실행 전에는 브라우저 새로고침만으로 최신 Markdown 변경이 반영되지 않는다.\n\n## 롤백 계획\n\n- `.control-board/state.json` 사용을 중단하고 기존 `src/app.js` 내장 데이터로 되돌린다.\n- 데이터 계약 변경은 `FeatureSpec`, `DocumentState`, `TaskState`, `BoardStateFile` 항목을 제거해 되돌린다.\n",
           "updatedAt": "2026-06-04T11:50:46.711Z"
         },
         {
@@ -225,7 +278,8 @@
           "status": "done",
           "required": true,
           "summary": "# Tasks",
-          "updatedAt": "2026-06-04T11:50:46.848Z"
+          "content": "# Tasks\n\n- [x] document-state-sync 기능 spec 폴더 생성\n- [x] 상태 동기화 데이터 계약 초안 작성\n- [x] `.control-board/state.json` 기본 구조 정의\n- [x] 실제 상태 파일 예시 추가\n- [x] `src/app.js` 데이터를 상태 파일 모델로 매핑\n- [x] 상태 파일 누락 시 fallback 동작 구현\n- [x] `scripts/board-sync.js`로 실제 Markdown 파일 읽기 구현\n- [x] 핵심 문서 5개를 `board-state.json` 문서 탭에 반영\n- [x] 기능별 `specs/<feature-name>/` 폴더 스캔 구현\n- [x] `tasks.md` 체크박스 기반 태스크 상태 추출\n- [x] `run_tests.sh`에 board-sync 검증 포함\n- [x] 문서 상태와 작업 맵이 실제 기능 spec 폴더 기준으로 표시되는지 검증\n- [x] 최근 수정 파일을 최신순으로 상태 파일에 포함\n",
+          "updatedAt": "2026-06-05T08:24:47.205Z"
         },
         {
           "path": "specs/document-state-sync/acceptance-tests.md",
@@ -233,6 +287,7 @@
           "status": "review",
           "required": true,
           "summary": "# Acceptance Tests",
+          "content": "# Acceptance Tests\n\n## 완료 기준\n\n- `specs/document-state-sync/`에 5개 기능 문서가 존재한다.\n- `docs/data-contracts.md`에 `FeatureSpec`, `DocumentState`, `TaskState`, `BoardStateFile` 계약이 정의되어 있다.\n- `.control-board/state.json` 필드 구조와 fallback 기준이 문서화되어 있다.\n- `node scripts/board-sync.js`가 실제 Markdown 파일을 읽어 `.control-board/state.json`과 `src/board-state.json`을 생성한다.\n- `AGENTS.md`, `docs/architecture.md`, `docs/coding-rules.md`, `docs/data-contracts.md`, `docs/testing-guide.md`가 `board-state.json`의 `documents`에 포함된다.\n- `specs/<feature-name>/tasks.md` 체크박스가 `board-state.json`의 task 상태로 반영된다.\n- 후속 구현 전에도 기존 정적 보드는 깨지지 않는다.\n\n## 자동 테스트\n\n```bash\nnode --check src/app.js\nnode scripts/board-sync.js\n./scripts/run_tests.sh\n```\n\n## 수동 검증\n\n- 기능 계획 화면의 `specs/<feature-name>/` 경로와 실제 폴더가 일치하는지 확인한다.\n- 핵심 문서 5개 중 하나를 수정한 뒤 `node scripts/board-sync.js` 실행과 브라우저 새로고침으로 미리보기 내용이 바뀌는지 확인한다.\n",
           "updatedAt": "2026-06-04T11:50:46.983Z"
         },
         {
@@ -241,6 +296,7 @@
           "status": "review",
           "required": true,
           "summary": "# Change Log",
+          "content": "# Change Log\n\n## 2026-06-04\n\n### 변경 내용\n\n- 실제 `specs/<feature-name>/` 문서 구조와 보드 상태를 연결하기 위한 document-state-sync 기능 spec을 추가했다.\n- `.control-board/state.json` 기반 상태 동기화 계약을 설계 범위로 정의했다.\n- `.control-board/state.json` 예시 파일을 추가하고 기존 기능 3개의 문서/태스크 상태를 담았다.\n- smoke test가 상태 파일 JSON과 필수 기능 id를 검증하도록 보강했다.\n- `src/app.js`가 `.control-board/state.json`을 읽어 기능 계획과 작업 맵 데이터로 매핑하도록 연결했다.\n- 상태 파일을 읽지 못하면 기존 내장 데이터로 표시되도록 fallback을 유지했다.\n- `src/` 정적 서버에서도 상태를 읽을 수 있도록 `src/board-state.json` 브라우저용 스냅샷을 추가하고 앱의 상태 파일 탐색 경로에 포함했다.\n- `scripts/board-sync.js`가 실제 Markdown 파일을 읽어 `.control-board/state.json`과 `src/board-state.json`을 생성하도록 구현했다.\n- 핵심 문서 5개와 모든 `specs/<feature-name>/` 폴더를 자동 스캔하도록 연결했다.\n- `tasks.md` 체크박스를 task 상태로 변환하고, 문서의 `미정`, `TODO`, 미완료 체크박스를 검토 필요 상태로 판단하도록 했다.\n- `AGENTS.md`에 작업 완료 전 board-sync 실행 규칙을 추가했다.\n\n### 변경 이유\n\n- 현재 보드는 내장 데이터 기반이라 실제 Markdown 문서 준비 상태와 화면 상태가 자동으로 일치하지 않는다.\n\n### 테스트 결과\n\n- `node --check src/app.js`와 `./scripts/run_tests.sh`로 기존 정적 앱이 깨지지 않는지 검증한다.\n- `node --check src/app.js`, `./scripts/run_tests.sh`, 상태 파일 JSON 파싱 검증을 통과했다.\n- `node scripts/board-sync.js` 실행 결과 핵심 문서 5개와 기능 spec 5개가 동기화됐다.\n- `./scripts/run_tests.sh`가 board-sync 실행을 포함해 통과했다.\n\n### 남은 작업\n\n- 파일 변경 감시 watcher와 자동 브라우저 reload는 후속 범위로 남긴다.\n",
           "updatedAt": "2026-06-04T11:50:47.120Z"
         }
       ],
@@ -340,6 +396,14 @@
           "status": "done",
           "source": "specs/document-state-sync/tasks.md",
           "criteria": "체크된 작업으로 기록되어 있다."
+        },
+        {
+          "id": "document-state-sync-최근-수정-파일을-최신순으로-상태-파일에-포함",
+          "featureId": "document-state-sync",
+          "title": "최근 수정 파일을 최신순으로 상태 파일에 포함",
+          "status": "done",
+          "source": "specs/document-state-sync/tasks.md",
+          "criteria": "체크된 작업으로 기록되어 있다."
         }
       ]
     },
@@ -347,7 +411,7 @@
       "id": "generated-docs-preview",
       "path": "specs/generated-docs-preview/",
       "title": "Generated Docs Preview",
-      "status": "active",
+      "status": "done",
       "summary": "AI 템플릿은 `AGENTS.md`, `docs/architecture.md`, `docs/data-contracts.md` 같은 문서를 기준으로 작업한다. 사용자는 파일 경로보다 문서의 목적, 상태, 검토 필요 여부를 먼저 이해해야 한다.",
       "documents": [
         {
@@ -356,7 +420,8 @@
           "status": "done",
           "required": true,
           "summary": "AI 템플릿은 `AGENTS.md`, `docs/architecture.md`, `docs/data-contracts.md` 같은 문서를 기준으로 작업한다. 사용자는 파일 경로보다 문서의 목적, 상태, 검토 필요 여부를 먼저 이해해야 한다.",
-          "updatedAt": "2026-06-03T14:04:11.986Z"
+          "content": "# Spec\n\n## 배경\n\nAI 템플릿은 `AGENTS.md`, `docs/architecture.md`, `docs/data-contracts.md` 같은 문서를 기준으로 작업한다. 사용자는 파일 경로보다 문서의 목적, 상태, 검토 필요 여부를 먼저 이해해야 한다.\n\n## 요구사항\n\n- 요구사항 화면의 상단 작은 탭에서 홈과 주요 문서를 전환할 수 있어야 한다.\n- 문서 생성 현황은 모든 문서를 한 줄 row로 표시하고 상태를 색과 텍스트로 구분해야 한다.\n- 문서 미리보기는 실제 `AGENTS.md`와 `docs/*.md` 원문을 읽어 Markdown 본문으로 보여줘야 한다.\n- 계획 탭 기능 카드의 문서 pill은 해당 기능 폴더의 `spec.md`, `plan.md`, `tasks.md`, `acceptance-tests.md`, `change-log.md`와 연결되어야 한다.\n\n## 범위\n\n- 포함:\n  - 문서 탭\n  - 문서 생성 현황 row\n  - 실제 Markdown 본문 미리보기\n  - 기능 카드의 문서 pill 표시\n- 제외:\n  - 브라우저에서 Markdown 파일 직접 저장\n\n## 사용자 또는 downstream 영향\n\n- 비개발자는 어떤 문서가 완료됐고 어떤 문서가 검토 필요한지 홈에서 확인할 수 있다.\n- AI coding agent는 기능 카드의 문서 경로를 통해 작업 전 확인 문서를 찾을 수 있다.\n\n## 데이터 계약 영향\n\n- `TemplateDocument.path`, 문서 상태 표시 데이터와 연결된다.\n- 새 저장 방식은 추가하지 않는다.\n",
+          "updatedAt": "2026-06-05T07:57:26.821Z"
         },
         {
           "path": "specs/generated-docs-preview/plan.md",
@@ -364,15 +429,17 @@
           "status": "done",
           "required": true,
           "summary": "# Plan",
+          "content": "# Plan\n\n## 구현 전략\n\n1. 기존 문서 탭 렌더링을 유지한다.\n2. 문서 생성 현황은 1열 row UI와 세로 스크롤로 표시한다.\n3. 기능 카드에서는 위쪽에 기능 경로를 표시하고, 문서 pill은 `spec.md`처럼 짧게 표시한다.\n4. 문서 상태 색상은 완료, 검토 필요, 대기 중 상태별 class로 관리한다.\n\n## Allowed Files\n\n- `src/app.js`\n- `src/styles.css`\n- `specs/generated-docs-preview/`\n- `specs/ai-workflow-control-board/change-log.md`\n\n## 리스크\n\n- 현재 문서 내용은 내장 데이터라 원본 Markdown 변경과 자동 동기화되지 않는다.\n- 문서 상태는 실제 파일 생성 여부를 자동 판정하지 않는다.\n\n## 롤백 계획\n\n- 문서 pill과 문서 생성 현황 렌더링을 이전 단순 표시로 되돌린다.\n",
           "updatedAt": "2026-06-03T14:04:12.126Z"
         },
         {
           "path": "specs/generated-docs-preview/tasks.md",
           "name": "tasks.md",
-          "status": "review",
+          "status": "done",
           "required": true,
           "summary": "# Tasks",
-          "updatedAt": "2026-06-03T14:04:12.269Z"
+          "content": "# Tasks\n\n- [x] 요구사항 화면에 홈/문서 탭 구성\n- [x] 문서 생성 현황을 1열 row UI로 표시\n- [x] 모든 문서가 스크롤로 보이도록 제한 제거\n- [x] Markdown 미리보기 화면 구성\n- [x] 계획 탭에서 기능 경로와 문서 pill 표시\n- [x] 실제 Markdown 파일 원문을 읽어 문서 탭에 표시\n",
+          "updatedAt": "2026-06-05T07:57:37.104Z"
         },
         {
           "path": "specs/generated-docs-preview/acceptance-tests.md",
@@ -380,7 +447,8 @@
           "status": "done",
           "required": true,
           "summary": "# Acceptance Tests",
-          "updatedAt": "2026-06-03T14:04:12.401Z"
+          "content": "# Acceptance Tests\n\n## 완료 기준\n\n- 요구사항 화면에서 홈과 문서 탭을 전환할 수 있다.\n- 문서 생성 현황에 모든 문서가 표시되고 영역 안에서 스크롤할 수 있다.\n- 각 문서 row에는 문서명과 상태가 함께 표시된다.\n- 문서 row 또는 탭을 누르면 실제 Markdown 파일의 제목, 섹션, 목록, 표, 코드가 본문으로 표시된다.\n- 기능 계획 카드 위에는 `specs/generated-docs-preview/` 경로가 보인다.\n- 기능 카드 문서 pill은 `spec.md`, `plan.md`, `tasks.md`, `acceptance-tests.md`, `change-log.md`처럼 짧게 보인다.\n\n## 자동 테스트\n\n```bash\nnode --check src/app.js\n./scripts/run_tests.sh\n```\n\n## 수동 검증\n\n- 브라우저에서 문서 탭을 눌러 미리보기가 바뀌는지 확인한다.\n- `docs/architecture.md`, `docs/data-contracts.md`가 요약 문장이 아니라 실제 문서 본문으로 보이는지 확인한다.\n- 문서 생성 현황 스크롤이 가능한지 확인한다.\n",
+          "updatedAt": "2026-06-05T07:57:43.810Z"
         },
         {
           "path": "specs/generated-docs-preview/change-log.md",
@@ -388,7 +456,8 @@
           "status": "done",
           "required": true,
           "summary": "# Change Log",
-          "updatedAt": "2026-06-03T14:04:12.541Z"
+          "content": "# Change Log\n\n## 2026-06-03\n\n### 변경 내용\n\n- 문서 탭, 문서 생성 현황, Markdown 미리보기, 기능 카드 문서 pill을 generated docs preview 기능 spec으로 분리했다.\n- `board-sync.js`가 주요 Markdown 파일의 원문을 상태 JSON에 포함하고, 문서 탭이 실제 본문을 렌더링하도록 변경했다.\n\n### 변경 이유\n\n- 문서 상태와 미리보기 기능은 화면 시각화와 별도로 추적되어야 한다.\n\n### 테스트 결과\n\n- 마이그레이션 후 `node --check src/app.js`와 `./scripts/run_tests.sh`로 검증한다.\n- 실제 Markdown 본문 포함 여부를 smoke test에 추가했다.\n\n### 남은 작업\n\n- 브라우저에서 주요 문서별 본문 표시를 수동 검증한다.\n",
+          "updatedAt": "2026-06-05T07:57:49.561Z"
         }
       ],
       "tasks": [
@@ -433,12 +502,12 @@
           "criteria": "체크된 작업으로 기록되어 있다."
         },
         {
-          "id": "generated-docs-preview-실제-markdown-파일-읽기와-상태-동기화-방식-검토",
+          "id": "generated-docs-preview-실제-markdown-파일-원문을-읽어-문서-탭에-표시",
           "featureId": "generated-docs-preview",
-          "title": "실제 Markdown 파일 읽기와 상태 동기화 방식 검토",
-          "status": "waiting",
+          "title": "실제 Markdown 파일 원문을 읽어 문서 탭에 표시",
+          "status": "done",
           "source": "specs/generated-docs-preview/tasks.md",
-          "criteria": "tasks.md에서 완료 체크가 필요하다."
+          "criteria": "체크된 작업으로 기록되어 있다."
         }
       ]
     },
@@ -455,6 +524,7 @@
           "status": "done",
           "required": true,
           "summary": "AI coding agent와 함께 작업하려면 테스트 결과, 변경 기록, ADR, 다음 작업 요청이 분리되어 보여야 한다. 사용자는 작업이 완료됐는지, 어떤 위험이 남았는지, 어떤 결정을 승인했는지 확인해야 한다.",
+          "content": "# Spec\n\n## 배경\n\nAI coding agent와 함께 작업하려면 테스트 결과, 변경 기록, ADR, 다음 작업 요청이 분리되어 보여야 한다. 사용자는 작업이 완료됐는지, 어떤 위험이 남았는지, 어떤 결정을 승인했는지 확인해야 한다.\n\n## 요구사항\n\n- 테스트 화면은 최신 테스트 결과를 위에서부터 보여줘야 한다.\n- 변경 기록 화면은 최신 변경 로그를 위에서부터 보여줘야 한다.\n- 결정 기록 화면은 ADR 목록과 결정 내용을 보여줘야 한다.\n- 작업 완료 시 변경 범위, 검증, 위험, 후속 작업을 기록할 수 있어야 한다.\n- 계획 탭 기능 카드가 `specs/validation-and-handoff/` 경로와 연결되어야 한다.\n\n## 범위\n\n- 포함:\n  - 테스트 기록 화면\n  - 변경 기록 화면\n  - ADR 화면\n  - 작업 후 로그 기록\n  - 기능 계획 카드의 handoff 상태 표시\n- 제외:\n  - 자동 테스트 실행 UI\n  - Codex API 직접 연동\n  - GitHub PR 자동 생성\n\n## 사용자 또는 downstream 영향\n\n- 비개발자는 Codex 작업이 어떤 검증을 거쳤는지 확인할 수 있다.\n- AI coding agent는 완료 보고 형식과 변경 로그 기준을 유지할 수 있다.\n\n## 데이터 계약 영향\n\n- 테스트, 로그, ADR 표시용 내장 데이터를 사용한다.\n- 새 저장소나 외부 연동은 추가하지 않는다.\n",
           "updatedAt": "2026-06-03T14:04:12.817Z"
         },
         {
@@ -463,6 +533,7 @@
           "status": "done",
           "required": true,
           "summary": "# Plan",
+          "content": "# Plan\n\n## 구현 전략\n\n1. 테스트, 변경 기록, ADR 화면을 최신순 기록형 UI로 유지한다.\n2. 작업 후 변경 내용은 각 기능 spec의 `change-log.md`와 제품 루트 change-log에 기록한다.\n3. 기능 계획 카드에서는 검증과 전달 상태를 `specs/validation-and-handoff/` 경로로 표시한다.\n4. 완료 보고는 AGENTS.md의 형식을 따른다.\n\n## Allowed Files\n\n- `src/app.js`\n- `src/styles.css`\n- `AGENTS.md`\n- `specs/validation-and-handoff/`\n- `specs/ai-workflow-control-board/change-log.md`\n\n## 리스크\n\n- 현재 테스트 실행은 CLI에서 수행하며 UI에서 직접 실행하지 않는다.\n- Codex 작업 요청 생성은 후속 동적 연동에서 다시 설계해야 한다.\n\n## 롤백 계획\n\n- 테스트/로그/ADR 화면을 이전 정적 기록 렌더링으로 되돌린다.\n- 기능 spec 분리 문서를 제거하고 제품 루트 spec만 사용한다.\n",
           "updatedAt": "2026-06-03T14:04:12.957Z"
         },
         {
@@ -471,6 +542,7 @@
           "status": "review",
           "required": true,
           "summary": "# Tasks",
+          "content": "# Tasks\n\n- [x] 테스트 기록 화면 구성\n- [x] 변경 기록 화면 구성\n- [x] ADR 화면 구성\n- [x] AGENTS.md 완료 보고 형식 유지\n- [x] 작업 후 change-log 기록\n- [ ] Codex 작업 요청 생성 흐름을 기능별 spec과 연결하는 방식 검토\n",
           "updatedAt": "2026-06-03T14:04:13.094Z"
         },
         {
@@ -479,6 +551,7 @@
           "status": "done",
           "required": true,
           "summary": "# Acceptance Tests",
+          "content": "# Acceptance Tests\n\n## 완료 기준\n\n- 테스트 탭에서 테스트 이름, 내용, 결과가 최신순으로 보인다.\n- 변경 기록 탭에서 변경 요약, 검증, 위험이 최신순으로 보인다.\n- 결정 기록 탭에서 ADR 코드, 상태, 결정 내용을 확인할 수 있다.\n- 작업 후 제품 루트 change-log 또는 기능별 change-log가 갱신된다.\n- 기능 계획 카드가 `specs/validation-and-handoff/` 경로를 표시한다.\n\n## 자동 테스트\n\n```bash\nnode --check src/app.js\n./scripts/run_tests.sh\n```\n\n## 수동 검증\n\n- 테스트, 변경 기록, 결정 기록 탭을 각각 열어 최신순 표시를 확인한다.\n- 완료 보고에 변경 파일, 검증, 위험, 후속 작업이 포함되는지 확인한다.\n",
           "updatedAt": "2026-06-03T14:04:13.230Z"
         },
         {
@@ -487,6 +560,7 @@
           "status": "done",
           "required": true,
           "summary": "# Change Log",
+          "content": "# Change Log\n\n## 2026-06-03\n\n### 변경 내용\n\n- 테스트 기록, 변경 기록, ADR, 작업 완료 보고 흐름을 validation and handoff 기능 spec으로 분리했다.\n- 테스트, 변경 기록, 결정 기록 화면을 공통 compact 기록 카드 디자인으로 통일했다.\n- 기록형 화면은 한 번에 5개 카드만 표시하고, 초과 항목은 이전/다음 페이지네이션으로 이동하도록 변경했다.\n\n### 변경 이유\n\n- 검증과 Codex 전달 흐름은 화면 시각화나 문서 미리보기와 독립적으로 관리되어야 한다.\n- 기록 항목이 늘어나면 한 화면의 카드 수를 제한해야 검토 흐름이 복잡해지지 않는다.\n\n### 테스트 결과\n\n- 마이그레이션 후 `node --check src/app.js`와 `./scripts/run_tests.sh`로 검증한다.\n- `node --check src/app.js`와 `./scripts/run_tests.sh`로 검증한다.\n\n### 남은 작업\n\n- Codex 작업 요청 생성과 실제 실행 로그 연동은 후속 spec에서 다룬다.\n",
           "updatedAt": "2026-06-03T14:50:17.566Z"
         }
       ],
@@ -554,7 +628,8 @@
           "status": "done",
           "required": true,
           "summary": "사용자는 AI 템플릿을 사용할 때 현재 프로젝트가 요구사항, 계획, 작업, 검증, 변경 기록, 결정 기록 중 어디에 있는지 빠르게 보고 싶어 한다. 파일 구조를 직접 읽는 대신 화면 전환, 상태 카드, 칸반 보드, 태스크 맵으로 흐름을 확인해야 한다.",
-          "updatedAt": "2026-06-03T14:04:11.042Z"
+          "content": "# Spec\n\n## 배경\n\n사용자는 AI 템플릿을 사용할 때 현재 프로젝트가 요구사항, 계획, 작업, 검증, 변경 기록, 결정 기록 중 어디에 있는지 빠르게 보고 싶어 한다. 파일 구조를 직접 읽는 대신 화면 전환, 상태 카드, 칸반 보드, 태스크 맵으로 흐름을 확인해야 한다.\n\n## 요구사항\n\n- 왼쪽 내비게이션에서 요구사항, 계획, 작업, 테스트, 변경 기록, 결정 기록 화면을 전환할 수 있어야 한다.\n- 요구사항 홈은 완료 단계, 현재 단계, 다음 단계, 최근 수정 내역, 문서 생성 현황, 작업 보드를 함께 보여줘야 한다.\n- 작업 화면은 기능에서 태스크로 이어지는 관계를 마인드맵 형태로 보여줘야 한다.\n- 칸반 보드는 검토 필요, 진행 중, 승인됨, 막힘 상태를 색상과 텍스트로 구분해야 한다.\n- 각 시각화 요소는 실제 템플릿 문서 또는 spec 문서 경로와 연결되어야 한다.\n\n## 범위\n\n- 포함:\n  - 왼쪽 화면 전환 내비게이션\n  - 요구사항 홈 상태 요약\n  - 메인 칸반 보드\n  - 작업 흐름 태스크 맵\n  - 상태별 색상 표시\n- 제외:\n  - 실제 Markdown 파일 저장\n  - 드래그 앤 드롭 칸반\n  - 다중 프로젝트 상태 동기화\n\n## 사용자 또는 downstream 영향\n\n- 비개발자는 현재 단계와 다음 액션을 파일 탐색 없이 확인할 수 있다.\n- AI coding agent는 보드가 가리키는 실제 문서 경로를 기준으로 작업 범위를 추적할 수 있다.\n\n## 데이터 계약 영향\n\n- 기존 `WorkflowStage`, `ChecklistItem`, 기능 카드 표시 데이터를 사용한다.\n- 새 저장소나 외부 API는 추가하지 않는다.\n",
+          "updatedAt": "2026-06-05T08:24:53.313Z"
         },
         {
           "path": "specs/workflow-visualization/plan.md",
@@ -562,6 +637,7 @@
           "status": "done",
           "required": true,
           "summary": "# Plan",
+          "content": "# Plan\n\n## 구현 전략\n\n1. 기존 정적 앱 구조를 유지하고 `src/app.js`의 화면별 렌더링 함수를 사용한다.\n2. 요구사항 홈은 compact summary strip과 칸반 보드를 중심으로 구성한다.\n3. 작업 화면은 기능 그룹과 태스크를 연결선이 있는 태스크 맵으로 표시한다.\n4. 상태 색상은 CSS class로만 구분하고 텍스트 라벨을 함께 제공한다.\n5. 기능 경로는 `specs/workflow-visualization/`로 표시한다.\n\n## Allowed Files\n\n- `src/app.js`\n- `src/styles.css`\n- `specs/workflow-visualization/`\n- `specs/ai-workflow-control-board/change-log.md`\n\n## 리스크\n\n- 현재 데이터는 정적 샘플이므로 실제 Codex 작업 진행도와 자동 동기화되지 않는다.\n- 태스크 맵 노드 클릭 상세 전환은 후속 범위다.\n\n## 롤백 계획\n\n- `src/app.js`의 관련 렌더링 함수를 이전 카드/리스트 구조로 되돌린다.\n- `src/styles.css`의 태스크 맵, 칸반, summary strip 스타일을 이전 상태로 되돌린다.\n",
           "updatedAt": "2026-06-03T14:04:11.188Z"
         },
         {
@@ -570,7 +646,8 @@
           "status": "review",
           "required": true,
           "summary": "# Tasks",
-          "updatedAt": "2026-06-05T07:10:52.349Z"
+          "content": "# Tasks\n\n- [x] 왼쪽 내비게이션을 화면 전환용 아이콘 rail로 정리\n- [x] 요구사항 홈에 완료/현재/다음 단계 카드 배치\n- [x] 진행 체크리스트와 문서 생성 현황을 compact 영역으로 축소\n- [x] 메인 칸반 보드를 요구사항 홈 중심 영역으로 복원\n- [x] 칸반 컬럼 제목을 상태별 색상 pill로 표시\n- [x] 작업 화면을 기능별 태스크 맵으로 변경\n- [x] 태스크 맵 연결선과 노드 크기 보정\n- [x] 태스크 노드 클릭 시 작업 상세 팝업 표시\n- [x] 기능별 task 목록을 기본 접힘 상태로 표시\n- [x] 기능 노드 클릭 시 해당 기능 task만 펼치기\n- [x] 홈 단계 카드 진행률을 실제 기능/문서/task 상태 기준으로 계산\n- [x] 홈 작업 보드를 task 단위가 아닌 기능 단위 칸반으로 동기화\n- [x] 홈 문서 상태 row를 실제 `.md` 미리보기와 연결\n- [ ] 태스크 노드에서 관련 문서로 바로 이동하는 상호작용 검토\n",
+          "updatedAt": "2026-06-05T07:51:06.683Z"
         },
         {
           "path": "specs/workflow-visualization/acceptance-tests.md",
@@ -578,7 +655,8 @@
           "status": "done",
           "required": true,
           "summary": "# Acceptance Tests",
-          "updatedAt": "2026-06-05T07:10:52.481Z"
+          "content": "# Acceptance Tests\n\n## 완료 기준\n\n- 왼쪽 내비게이션에서 6개 주요 화면으로 전환할 수 있다.\n- 요구사항 홈에서 완료 단계, 현재 단계, 다음 단계가 한 줄 요약으로 보인다.\n- 요구사항 홈의 완료/현재/다음 단계 진행률은 `board-state.json`의 기능, 문서, task 상태를 기준으로 계산된다.\n- 요구사항 홈의 문서 상태 row를 클릭하면 해당 `.md` 미리보기로 전환된다.\n- 작업 보드에는 검토 필요, 진행 중, 승인됨, 막힘 컬럼이 보인다.\n- 작업 보드는 개별 task가 아니라 `board-state.json`의 기능 단위 카드로 표시된다.\n- 기능 카드에는 기능명, spec 경로, 기능 진행률, 문서 완료 수, task 완료 수가 표시된다.\n- 작업 화면에는 기능 노드가 기본 접힘 상태로 보인다.\n- 기능 노드를 클릭하면 해당 기능의 태스크 노드만 펼쳐지고 연결선으로 이어져 보인다.\n- 태스크 노드를 클릭하면 작업 상세 팝업이 표시된다.\n- 계획 탭의 기능 카드가 `specs/workflow-visualization/` 경로를 표시한다.\n\n## 자동 테스트\n\n```bash\nnode --check src/app.js\n./scripts/run_tests.sh\n```\n\n## 수동 검증\n\n- 브라우저에서 요구사항, 계획, 작업 탭을 전환한다.\n- 요구사항 홈의 진행률이 하드코딩 값이 아니라 실제 기능 상태와 일치하는지 확인한다.\n- 홈 문서 상태 row에서 `AGENTS.md`, `architecture.md`, `data-contracts.md`를 클릭해 각 미리보기 경로가 표시되는지 확인한다.\n- 홈 작업 보드의 컬럼 count가 기능 상태별 개수와 일치하는지 확인한다.\n- 홈 작업 보드에 task 개별 카드가 쏟아지지 않고 기능 단위 카드만 표시되는지 확인한다.\n- 칸반 컬럼 제목이 가로 pill 형태로 보이는지 확인한다.\n- 작업 탭 최초 진입 시 기능별 task가 접혀 있는지 확인한다.\n- 기능 노드 클릭 시 해당 기능 task만 펼쳐지고 연결선이 끊겨 보이지 않는지 확인한다.\n- 펼쳐진 task 클릭 시 작업 상세 팝업이 표시되는지 확인한다.\n",
+          "updatedAt": "2026-06-05T07:51:06.819Z"
         },
         {
           "path": "specs/workflow-visualization/change-log.md",
@@ -586,7 +664,8 @@
           "status": "done",
           "required": true,
           "summary": "# Change Log",
-          "updatedAt": "2026-06-05T07:10:52.608Z"
+          "content": "# Change Log\n\n## 2026-06-03\n\n### 변경 내용\n\n- 요구사항 홈, 칸반 보드, 왼쪽 내비게이션, 작업 태스크 맵을 workflow visualization 기능 spec으로 분리했다.\n- 작업 탭에서 기능 노드의 `FEATURE n`, 진행률, 문서 수 표시를 제거하고 기능 제목 중심으로 단순화했다.\n- 기능별 태스크 노드를 작은 클릭형 카드로 바꾸고, 작업 상세는 하단 고정 영역 대신 팝업으로 표시하도록 변경했다.\n- 작업 탭 연결선을 가로 리스트형 선에서 기능별 1:N 마인드맵 선 구조로 보정했다.\n- 작업 탭 연결선을 CSS pseudo-element 방식에서 SVG path 방식으로 전환해 노드 위치 기준으로 자연스럽게 그리도록 변경했다.\n- 기능별 task 목록을 기본 접힘 상태로 바꾸고, 기능 노드 클릭 시 해당 기능의 task만 펼치도록 변경했다.\n- 요구사항 홈의 완료/현재/다음 단계 카드를 고정값이 아니라 실제 기능, 문서, task 상태 기준 진행률로 계산하도록 변경했다.\n- 홈 작업 보드를 개별 task가 아니라 실제 기능 상태 기준 칸반으로 동기화했다.\n- 홈 문서 상태 row를 클릭하면 해당 `.md` 문서 미리보기로 전환되도록 연결했다.\n\n### 변경 이유\n\n- 화면 흐름과 작업 시각화는 제품 전체 spec이 아니라 독립 기능으로 추적해야 한다.\n- 작업 탭의 목적은 기능과 태스크의 연결 관계를 빠르게 보는 것이므로, 노드 내부의 보조 정보와 하단 상세 리스트는 시각적 흐름을 방해한다.\n- 태스크가 여러 개인 기능은 한 줄 연결보다 기능에서 각 태스크로 분기되는 1:N 구조가 관계를 더 명확하게 보여준다.\n- CSS 선은 카드 크기와 반응형 배치가 바뀔 때 쉽게 어긋나므로, 마인드맵 연결은 노드 위치를 계산한 SVG path가 더 안정적이다.\n\n### 테스트 결과\n\n- 마이그레이션 후 `node --check src/app.js`와 `./scripts/run_tests.sh`로 검증한다.\n- `node --check src/app.js`와 `./scripts/run_tests.sh`로 검증한다.\n- 브라우저에서 작업 탭 최초 진입 시 기능 5개가 접힘 상태이고 task leaf가 0개인 것을 확인했다.\n- 기능 노드 클릭 시 해당 기능 task 12개만 펼쳐지고 task 상세 팝업이 표시되는 것을 확인했다.\n- 브라우저에서 홈 카드가 `1/5 기능 완료`, `Document State Sync 88%`, `Generated Docs Preview 82%`로 실제 상태를 반영하는 것을 확인했다.\n- 브라우저에서 홈 작업 보드가 기능 5개를 상태별 컬럼에 나누어 표시하고, 각 카드에 진행률과 문서/task 완료 수를 표시하는 것을 확인한다.\n- 브라우저에서 홈 문서 상태 row 클릭 시 해당 문서 미리보기로 전환되는 것을 확인한다.\n\n### 남은 작업\n\n- 태스크 상세 팝업의 실제 문서 바로가기 또는 편집 연결을 후속 검토한다.\n",
+          "updatedAt": "2026-06-05T07:51:06.956Z"
         }
       ],
       "tasks": [
@@ -682,6 +761,14 @@
           "id": "workflow-visualization-홈-작업-보드를-task-단위가-아닌-기능-단위-칸반으로-동기화",
           "featureId": "workflow-visualization",
           "title": "홈 작업 보드를 task 단위가 아닌 기능 단위 칸반으로 동기화",
+          "status": "done",
+          "source": "specs/workflow-visualization/tasks.md",
+          "criteria": "체크된 작업으로 기록되어 있다."
+        },
+        {
+          "id": "workflow-visualization-홈-문서-상태-row를-실제-md-미리보기와-연결",
+          "featureId": "workflow-visualization",
+          "title": "홈 문서 상태 row를 실제 .md 미리보기와 연결",
           "status": "done",
           "source": "specs/workflow-visualization/tasks.md",
           "criteria": "체크된 작업으로 기록되어 있다."

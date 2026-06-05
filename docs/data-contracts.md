@@ -10,13 +10,14 @@
 | --- | --- | --- | --- |
 | BoardProject | 한 프로젝트의 이름, 목표, 진행률을 표현한다 | 앱 | 보드 헤더, AI 지시문 |
 | WorkflowStage | 요구사항, 계획, 작업, 검증 같은 진행 단계를 표현한다 | 앱 | 칸반 보드, 상세 패널 |
-| TemplateDocument | 실제 템플릿 파일과 요약 내용을 연결한다 | 앱 | 문서 라이브러리, 프롬프트 |
+| TemplateDocument | 실제 템플릿 파일과 요약, 원문 내용을 연결한다 | 앱 | 문서 라이브러리, 프롬프트 |
 | ChecklistItem | 사용자가 완료 여부를 표시하는 검토 항목이다 | 사용자 | 진행률, 검증 패널 |
 | QualityRule | 완료 전 확인해야 하는 품질 기준이다 | 앱 | 검증 패널, change-log |
 | FeatureSpec | `specs/<feature-name>/` 단위 기능 문서 묶음을 표현한다 | 앱 | 기능 계획, 작업 맵, AI 지시문 |
 | DocumentState | 기능별 문서의 존재 여부와 검토 상태를 표현한다 | 앱 또는 상태 파일 | 문서 생성 현황, 기능 카드 |
 | TaskState | 기능별 작업 상태와 상세 내용을 표현한다 | 앱 또는 상태 파일 | 작업 맵, 완료 보고 |
 | BoardStateFile | 동적 보드 상태 파일의 최상위 구조를 표현한다 | `.control-board/state.json` | 전체 보드, Codex 작업 요청 |
+| ActivityState | 최근 수정 파일과 최근 수정된 기능을 표현한다 | `.control-board/state.json` | 홈 최근 수정 패널 |
 
 ## 필드 계약
 
@@ -31,6 +32,7 @@
 | WorkflowStage | checks | array | no | 1개 이상 | 단계별 체크리스트 |
 | TemplateDocument | path | string | no | 파일 경로 | 템플릿 문서 위치 |
 | TemplateDocument | purpose | string | no | 1자 이상 | 문서 목적 |
+| TemplateDocument | content | string | no | Markdown 문자열 | 문서 탭에 표시할 실제 파일 원문 |
 | ChecklistItem | id | string | no | 고유값 | 체크 항목 식별자 |
 | ChecklistItem | label | string | no | 1자 이상 | 검토 항목 |
 | QualityRule | metric | string | no | 1자 이상 | 검증 기준 이름 |
@@ -45,6 +47,7 @@
 | DocumentState | name | string | no | 파일명 | 화면 표시 문서명 |
 | DocumentState | status | string | no | `done`, `review`, `waiting`, `missing` | 문서 상태 |
 | DocumentState | required | boolean | no | true 또는 false | 필수 문서 여부 |
+| DocumentState | content | string | no | Markdown 문자열 | 기능 문서의 실제 파일 원문 |
 | TaskState | id | string | no | 고유값 | 작업 식별자 |
 | TaskState | featureId | string | no | `FeatureSpec.id` 참조 | 연결 기능 |
 | TaskState | title | string | no | 1자 이상 | 작업 제목 |
@@ -55,7 +58,10 @@
 | BoardStateFile | documents | array | no | 핵심 문서 5개 이상 | `AGENTS.md`와 주요 `docs/*.md` 문서 상태 목록 |
 | BoardStateFile | currentStage | string | no | `WorkflowStage.id` 참조 | 현재 단계 |
 | BoardStateFile | features | array | no | `FeatureSpec[]` | 기능 상태 목록 |
+| BoardStateFile | activity | object | no | `ActivityState` | 최근 수정 내역 |
 | BoardStateFile | updatedAt | string | yes | ISO 8601 | 마지막 갱신 시각 |
+| ActivityState | focusFeature | object | yes | `{ id, title }` 또는 null | 최근 수정된 spec 파일 기준 기능 |
+| ActivityState | recentFiles | array | no | 최신순 1개 이상 | 최근 수정 파일 목록 |
 
 ## 키와 관계
 
@@ -72,6 +78,7 @@
 - 리포트: `change-log.md` 초안과 완료 보고 형식에 사용된다.
 - 모델 또는 파이프라인: 현재 없음.
 - 문서 상태 동기화: `.control-board/state.json`이 있으면 내장 데이터보다 우선한다.
+- 최근 수정 패널: `.control-board/state.json.activity.recentFiles`를 최신순 한 줄 목록으로 표시한다.
 - 정적 서버 공개 범위가 `src/`로 제한될 때는 `.control-board/state.json`의 브라우저용 스냅샷인 `src/board-state.json`을 읽는다.
 - fallback: 상태 파일이 없거나 필수 필드가 누락되면 `src/app.js`의 내장 데이터를 사용한다.
 
@@ -89,9 +96,27 @@
       "path": "AGENTS.md",
       "status": "done",
       "body": "AI coding agent가 따라야 할 작업 규칙이다.",
+      "content": "# AGENTS.md\n\n## 목적\n\n...",
       "updatedAt": "2026-06-04T00:00:00.000Z"
     }
   ],
+  "activity": {
+    "focusFeature": {
+      "id": "generated-docs-preview",
+      "title": "Generated Docs Preview"
+    },
+    "recentFiles": [
+      {
+        "path": "specs/generated-docs-preview/change-log.md",
+        "label": "Generated Docs Preview / change-log.md",
+        "feature": {
+          "id": "generated-docs-preview",
+          "title": "Generated Docs Preview"
+        },
+        "updatedAt": "2026-06-04T00:00:00.000Z"
+      }
+    ]
+  },
   "features": [
     {
       "id": "workflow-visualization",
@@ -103,7 +128,8 @@
           "path": "specs/workflow-visualization/spec.md",
           "name": "spec.md",
           "status": "review",
-          "required": true
+          "required": true,
+          "content": "# Spec\n\n## 배경\n\n..."
         }
       ],
       "tasks": [
