@@ -114,76 +114,6 @@ const templateFiles = new Map([
 - 수동 확인:
 `,
   ],
-  [
-    "specs/initial-feature/spec.md",
-    `# Spec
-
-## 배경
-
-초기 기능의 배경을 작성한다.
-
-## 요구사항
-
-- [ ] 사용자가 달성해야 하는 결과를 작성한다.
-
-## 범위
-
-- 포함:
-- 제외:
-`,
-  ],
-  [
-    "specs/initial-feature/plan.md",
-    `# Plan
-
-## 접근
-
-초기 기능 구현 접근 방식을 작성한다.
-
-## Allowed Files
-
-- specs/initial-feature/
-`,
-  ],
-  [
-    "specs/initial-feature/tasks.md",
-    `# Tasks
-
-- [ ] 요구사항 확인
-- [ ] 구현 계획 확인
-- [ ] 검증 기준 확인
-`,
-  ],
-  [
-    "specs/initial-feature/acceptance-tests.md",
-    `# Acceptance Tests
-
-## 완료 기준
-
-- 초기 기능의 완료 기준을 작성한다.
-
-## 자동 테스트
-
-실행할 테스트 명령을 작성한다.
-
-## 수동 검증
-
-브라우저나 사용자 흐름에서 확인할 내용을 작성한다.
-`,
-  ],
-  [
-    "specs/initial-feature/change-log.md",
-    `# Change Log
-
-## 변경 내용
-
-- 초기 기능 문서를 생성했다.
-
-## 테스트 결과
-
-- 아직 실행하지 않음.
-`,
-  ],
 ]);
 
 function resolveProjectRoot() {
@@ -207,6 +137,7 @@ function writeIfMissing(relativePath, content) {
 
 fs.mkdirSync(projectRoot, { recursive: true });
 fs.mkdirSync(path.join(projectRoot, "adr"), { recursive: true });
+fs.mkdirSync(path.join(projectRoot, "specs"), { recursive: true });
 
 const created = [];
 const skipped = [];

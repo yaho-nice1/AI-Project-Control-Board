@@ -89,7 +89,7 @@
 - 모델 또는 파이프라인: 현재 없음.
 - 문서 상태 동기화: `.control-board/state.json`이 있으면 내장 데이터보다 우선한다.
 - 외부 프로젝트 연결: `scripts/board-sync.js --project <path>`는 `<path>`를 읽고 보드 프로젝트의 상태 JSON만 갱신한다.
-- 외부 프로젝트 초기화: `scripts/board-init.js --project <path>`는 누락된 기본 문서만 생성하고 기존 파일은 덮어쓰지 않는다.
+- 외부 프로젝트 초기화: `scripts/board-init.js --project <path>`는 누락된 기본 문서와 `specs/`, `adr/` 폴더만 생성하고 기존 파일은 덮어쓰지 않는다.
 - 최근 수정 패널: `.control-board/state.json.activity.recentFiles`를 최신순 한 줄 목록으로 표시한다.
 - 정적 서버 공개 범위가 `src/`로 제한될 때는 `.control-board/state.json`의 브라우저용 스냅샷인 `src/board-state.json`을 읽는다.
 - fallback: 상태 파일이 없거나 필수 필드가 누락되면 `src/app.js`의 내장 데이터를 사용한다.

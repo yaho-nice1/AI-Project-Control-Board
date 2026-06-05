@@ -32,14 +32,12 @@ try {
     "docs/coding-rules.md",
     "docs/data-contracts.md",
     "docs/testing-guide.md",
-    "specs/initial-feature/spec.md",
-    "specs/initial-feature/plan.md",
-    "specs/initial-feature/tasks.md",
-    "specs/initial-feature/acceptance-tests.md",
-    "specs/initial-feature/change-log.md",
   ].forEach((relativePath) => {
     assert(fs.existsSync(path.join(projectRoot, relativePath)), `Missing initialized file: ${relativePath}`);
   });
+  assert(fs.existsSync(path.join(projectRoot, "specs")), "Missing initialized specs directory");
+  assert(fs.existsSync(path.join(projectRoot, "adr")), "Missing initialized adr directory");
+  assert(!fs.existsSync(path.join(projectRoot, "specs/initial-feature")), "Init must not create placeholder feature specs");
 
   fs.writeFileSync(path.join(projectRoot, "README.md"), "# Sample Codex Project\n\n## 목적\n\n외부 프로젝트 연결을 검증한다.\n");
   runNode(["scripts/board-sync.js", "--project", projectRoot]);
@@ -49,7 +47,7 @@ try {
   assert(boardState.sourceProject.path === projectRoot, "External source project path is not synced");
   assert(boardState.sourceProject.isBoardProject === false, "External project must not be marked as board project");
   assert(boardState.project.goal === "외부 프로젝트 연결을 검증한다.", "External README summary is not synced");
-  assert(boardState.features.some((feature) => feature.id === "initial-feature"), "Initial feature was not discovered");
+  assert(boardState.features.length === 0, "Fresh external project should start with no feature specs");
   assert(boardState.structure.valid === true, "Initialized external project should have a valid template structure");
 
   console.log("External project checks passed.");

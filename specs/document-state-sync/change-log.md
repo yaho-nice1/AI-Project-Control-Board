@@ -5,7 +5,7 @@
 ### 변경 내용
 
 - `board-sync.js --project <path>`로 외부 Codex 프로젝트를 읽어 보드 상태에 반영하도록 확장했다.
-- `board-init.js --project <path>`를 추가해 외부 프로젝트에 누락된 기본 템플릿 문서만 생성하도록 했다.
+- `board-init.js --project <path>`를 추가해 외부 프로젝트에 누락된 기본 템플릿 문서와 `specs/`, `adr/` 폴더만 생성하도록 했다.
 - 상태 파일에 `sourceProject`와 `structure`를 추가해 원본 프로젝트와 템플릿 구조 검사 결과를 기록한다.
 - 외부 프로젝트 init/sync를 검증하는 `tests/external-project.js`를 추가했다.
 
@@ -17,6 +17,7 @@
 
 - `./scripts/run_tests.sh` 통과.
 - 임시 외부 프로젝트를 생성해 init, sync, 구조 검사, 원본 프로젝트 복구 흐름을 검증했다.
+- 신규 프로젝트 초기 상태에서는 placeholder 기능 spec을 만들지 않고 빈 `specs/`를 정상 구조로 검증했다.
 
 ### 남은 작업
 

@@ -307,8 +307,6 @@ function structureState(features) {
   const warnings = [];
   if (!fs.existsSync(path.join(sourceRoot, "specs"))) {
     warnings.push("specs/ 폴더가 없습니다.");
-  } else if (!hasFeatureFolders) {
-    warnings.push("specs/ 아래에 기능 폴더가 없습니다.");
   }
   if (!fs.existsSync(path.join(sourceRoot, "adr"))) {
     warnings.push("adr/ 폴더가 없습니다. 중요한 결정 기록이 있으면 추가하세요.");

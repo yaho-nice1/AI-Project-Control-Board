@@ -21,7 +21,7 @@ node scripts/board-init.js --project "/path/to/new-codex-project"
 node scripts/board-sync.js --project "/path/to/new-codex-project"
 ```
 
-`board-init.js`는 대상 프로젝트에 없는 기본 템플릿 문서만 생성하고 기존 파일은 덮어쓰지 않는다. `board-sync.js --project`는 대상 프로젝트를 읽기만 하고 보드의 상태 JSON만 갱신한다.
+`board-init.js`는 대상 프로젝트에 없는 기본 템플릿 문서와 `specs/`, `adr/` 폴더만 생성하고 기존 파일은 덮어쓰지 않는다. 첫 기능의 `specs/<feature-name>/` 문서는 Codex 대화로 기능 범위가 정해진 뒤 생성한다. `board-sync.js --project`는 대상 프로젝트를 읽기만 하고 보드의 상태 JSON만 갱신한다.
 
 ## 구조
 
@@ -31,7 +31,6 @@ node scripts/board-sync.js --project "/path/to/new-codex-project"
 ├── README.md
 ├── docs/
 ├── specs/
-│   └── ai-workflow-control-board/
 ├── adr/
 ├── scripts/
 ├── src/
