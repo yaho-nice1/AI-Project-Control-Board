@@ -15,7 +15,7 @@
     "warnings": []
   },
   "currentStage": "tasks",
-  "updatedAt": "2026-06-05T10:23:58.806Z",
+  "updatedAt": "2026-06-05T10:29:41.562Z",
   "documents": [
     {
       "key": "agents",
@@ -70,6 +70,12 @@
     },
     "recentFiles": [
       {
+        "path": "README.md",
+        "label": "README.md",
+        "feature": null,
+        "updatedAt": "2026-06-05T10:29:10.766Z"
+      },
+      {
         "path": "specs/document-state-sync/change-log.md",
         "label": "Document State Sync / change-log.md",
         "feature": {
@@ -101,12 +107,6 @@
         "label": "docs/data-contracts.md",
         "feature": null,
         "updatedAt": "2026-06-05T10:23:31.505Z"
-      },
-      {
-        "path": "README.md",
-        "label": "README.md",
-        "feature": null,
-        "updatedAt": "2026-06-05T10:23:25.846Z"
       },
       {
         "path": "tests/external-project.js",
